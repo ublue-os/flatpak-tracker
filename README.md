@@ -55,7 +55,7 @@ The known runtime versions are defined in `check_flatpak_runtimes.py` and should
 known_latest_versions = {
     'org.gnome.Platform': '48',      # Check: https://wiki.gnome.org/ReleasePlanning
     'org.freedesktop.Platform': '24.08',  # Check: https://gitlab.com/freedesktop-sdk/freedesktop-sdk
-    'org.kde.Platform': '6.8',      # Check: https://community.kde.org/Schedules
+    'org.kde.Platform': '6.9',      # Check: https://community.kde.org/Schedules
 }
 ```
 
