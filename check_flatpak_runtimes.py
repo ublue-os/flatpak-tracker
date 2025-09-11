@@ -64,6 +64,10 @@ class FlatpakRuntimeChecker:
             'aurora-bazaar': {
                 'url': 'https://raw.githubusercontent.com/ublue-os/aurora/main/system_files/shared/usr/share/ublue-os/bazaar/config.yaml',
                 'format': 'bazaar_yaml'  # YAML format with appids in sections
+            },
+            'bazzite-bazaar': {
+                'url': 'https://raw.githubusercontent.com/ublue-os/bazzite/main/system_files/desktop/shared/usr/share/ublue-os/bazaar/config.yaml',
+                'format': 'bazaar_yaml'  # YAML format with appids in sections
             }
         }
         

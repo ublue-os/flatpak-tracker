@@ -139,6 +139,7 @@ This issue was automatically created by the flatpak-updater bot that monitors mu
 - [ublue-os/bazzite kde flatpaks](https://github.com/ublue-os/bazzite/blob/main/installer/kde_flatpaks/flatpaks)
 - [ublue-os/bluefin bazaar config](https://github.com/ublue-os/bluefin/blob/main/system_files/shared/usr/share/ublue-os/bazaar/config.yaml)
 - [ublue-os/aurora bazaar config](https://github.com/ublue-os/aurora/blob/main/system_files/shared/usr/share/ublue-os/bazaar/config.yaml)
+- [ublue-os/bazzite bazaar config](https://github.com/ublue-os/bazzite/blob/main/system_files/desktop/shared/usr/share/ublue-os/bazaar/config.yaml)
 
 If this is a false positive or the runtime is intentionally pinned to an older version for compatibility reasons, please close this issue with a comment explaining why.
 """.strip()
@@ -216,6 +217,7 @@ If this package should still be tracked, please verify it exists in one of these
 - [ublue-os/bazzite kde flatpaks](https://github.com/ublue-os/bazzite/blob/main/installer/kde_flatpaks/flatpaks)
 - [ublue-os/bluefin bazaar config](https://github.com/ublue-os/bluefin/blob/main/system_files/shared/usr/share/ublue-os/bazaar/config.yaml)
 - [ublue-os/aurora bazaar config](https://github.com/ublue-os/aurora/blob/main/system_files/shared/usr/share/ublue-os/bazaar/config.yaml)
+- [ublue-os/bazzite bazaar config](https://github.com/ublue-os/bazzite/blob/main/system_files/desktop/shared/usr/share/ublue-os/bazaar/config.yaml)
 
 ---
 *This issue was automatically closed by the flatpak-updater bot.*
