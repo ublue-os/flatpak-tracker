@@ -257,7 +257,7 @@ class FlatpakRuntimeChecker:
         
         # Add source labels
         for source in flatpak_info.sources:
-            labels.append(f'source-{source}')
+            labels.append(source)
         
         # Extract runtime information for labels
         if current_runtime and '/' in current_runtime:
@@ -267,17 +267,17 @@ class FlatpakRuntimeChecker:
             
             # Add runtime-specific labels
             if 'gnome' in runtime_name.lower():
-                labels.append('runtime-gnome')
+                labels.append('gnome')
             elif 'freedesktop' in runtime_name.lower():
-                labels.append('runtime-freedesktop')
+                labels.append('freedesktop')
             elif 'kde' in runtime_name.lower():
-                labels.append('runtime-kde')
+                labels.append('kde')
             
             # Add version labels (sanitized for GitHub)
             if runtime_version:
                 # Replace dots with dashes for GitHub label compatibility
                 safe_version = runtime_version.replace('.', '-')
-                labels.append(f'version-{safe_version}')
+                labels.append(safe_version)
         
         return labels
     
