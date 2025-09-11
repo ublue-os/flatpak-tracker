@@ -1,0 +1,64 @@
+#!/bin/bash
+# GitHub Copilot Coding Agent Environment Customization
+# This file preinstalls tools and dependencies used by the flatpak-updater project
+# to speed up the development and testing process.
+
+set -e
+
+echo "=== Setting up flatpak-updater development environment ==="
+
+# Update package lists
+echo "Updating package lists..."
+sudo apt-get update -qq
+
+# Install Python 3.11 and pip (if not already available)
+echo "Setting up Python 3.11..."
+sudo apt-get install -y python3 python3-pip python3-venv
+
+# Install flatpak and related system dependencies
+echo "Installing Flatpak and related dependencies..."
+sudo apt-get install -y \
+    flatpak \
+    bubblewrap \
+    desktop-file-utils \
+    gsettings-desktop-schemas \
+    libavahi-glib1 \
+    libmalcontent-0-0 \
+    libostree-1-1 \
+    libpipewire-0.3-0t64 \
+    libpipewire-0.3-common \
+    libspa-0.2-modules \
+    libwebrtc-audio-processing1 \
+    session-migration \
+    xdg-dbus-proxy \
+    xdg-desktop-portal \
+    xdg-desktop-portal-gtk
+
+# Set up Flathub remote (if flatpak is available)
+if command -v flatpak >/dev/null 2>&1; then
+    echo "Setting up Flathub remote..."
+    sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo || true
+fi
+
+# Install Python dependencies
+echo "Installing Python dependencies..."
+python3 -m pip install --upgrade pip
+python3 -m pip install \
+    'requests>=2.31.0' \
+    'PyGithub>=1.59.0' \
+    'charset-normalizer>=3.0.0' \
+    'idna>=3.0' \
+    'urllib3>=2.0.0' \
+    'certifi>=2020.0.0' \
+    'pynacl>=1.4.0' \
+    'pyjwt[crypto]>=2.4.0' \
+    'typing-extensions>=4.5.0' \
+    'cryptography>=3.4.0' \
+    'cffi>=1.14' \
+    'pycparser>=2.20'
+
+echo "=== Environment setup complete ==="
+echo "Available tools:"
+echo "- Python: $(python3 --version)"
+echo "- Flatpak: $(flatpak --version 2>/dev/null || echo 'Not available')"
+echo "- pip packages: $(python3 -m pip list | grep -E '(requests|PyGithub)' || echo 'Dependencies installed')"
