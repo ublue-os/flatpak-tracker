@@ -1,0 +1,60 @@
+{
+  "timestamp": "2025-09-11T13:24:39.163705",
+  "total_checked": 8,
+  "outdated_count": 4,
+  "outdated_packages": [
+    {
+      "flatpak_id": "app/org.gnome.Calculator",
+      "sources": [
+        "bluefin",
+        "aurora"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/46",
+      "latest_runtime": "org.gnome.Platform/x86_64/48",
+      "current_version": "46",
+      "latest_version": "48"
+    },
+    {
+      "flatpak_id": "app/org.mozilla.firefox",
+      "sources": [
+        "bluefin"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/22.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "current_version": "22.08",
+      "latest_version": "24.08"
+    },
+    {
+      "flatpak_id": "app/org.kde.krita",
+      "sources": [
+        "bazzite-gnome",
+        "bazzite-kde"
+      ],
+      "current_runtime": "org.kde.Platform/x86_64/6.6",
+      "latest_runtime": "org.kde.Platform/x86_64/6.8",
+      "current_version": "6.6",
+      "latest_version": "6.8"
+    },
+    {
+      "flatpak_id": "app/com.example.BazaarApp",
+      "sources": [
+        "bluefin-bazaar",
+        "aurora-bazaar"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/47",
+      "latest_runtime": "org.gnome.Platform/x86_64/48",
+      "current_version": "47",
+      "latest_version": "48"
+    }
+  ],
+  "all_tracked_packages": [
+    "app/org.gnome.Calculator",
+    "app/org.mozilla.firefox",
+    "app/org.kde.krita",
+    "app/com.example.BazaarApp",
+    "app/org.gnome.TextEditor",
+    "app/org.gimp.GIMP",
+    "app/org.libreoffice.LibreOffice",
+    "app/com.spotify.Client"
+  ]
+}
