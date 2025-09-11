@@ -164,7 +164,6 @@ class FlatpakRuntimeChecker:
     def extract_flatpak_id_from_issue_title(self, issue_title: str) -> Optional[str]:
         """Extract flatpak ID from issue title."""
         # Issue titles are in format: "Update runtime for app/org.example.App"
-        import re
         match = re.search(r'Update runtime for (app/[^\s]+)', issue_title)
         if match:
             return match.group(1)
