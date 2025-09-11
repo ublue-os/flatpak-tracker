@@ -60,7 +60,9 @@ class IssueGenerator:
 
 ### Look for an existing pull request!
 
-The application you're looking for in [github.com/flathub](https://github.com/flathub) - in many cases a pull request might already exist. If this is the case then you can help out by testing the updated flatpak and adding more information to an existing issue! Usually just getting more testers on a new version is enough to help the maintainers! 
+Look for the repositoy of this application in [github.com/flathub](https://github.com/flathub) - in many cases a pull request might already exist. If this is the case then you can help out by testing the updated flatpak and adding more information to an existing issue! Usually just getting more testers on a new version is enough to help the maintainers! 
+
+The bot will autoclose issues here, you can just work directly upstream, this issue is only a sign post!
 
 ### How to Update the Runtime on Flathub
 
