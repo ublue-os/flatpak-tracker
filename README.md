@@ -1,6 +1,8 @@
 # Flatpak Tracker
 
-Tracks out of date runtimes in Flatpaks shipped by Universal Blue. HELP WANTED! Go help a Flatpak!
+Tracks out of date runtimes in Flatpaks shipped by Universal Blue. 
+
+**HELP WANTED!** This is a good way to help FlatHub!
 
 ## Purpose
 
