@@ -77,10 +77,13 @@ pip install -r requirements.txt
 # Run detection (creates outdated_packages.json)
 python check_flatpak_runtimes.py --output outdated_packages.json
 
+# Create mock data for testing issue generation
+python create_mock_data.py --output mock_outdated.json
+
 # Test issue generation (requires GitHub credentials)
 export GITHUB_TOKEN="your_token"
 export GITHUB_REPOSITORY="owner/repo"
-python issue_generator.py outdated_packages.json
+python issue_generator.py mock_outdated.json
 ```
 
 ## Workflow Steps
@@ -138,6 +141,7 @@ This speeds up development by avoiding the need to install dependencies each tim
 │       └── check-flatpak-runtimes.yml    # GitHub Actions workflow
 ├── check_flatpak_runtimes.py            # Main detection script
 ├── issue_generator.py                   # GitHub issue creation module
+├── create_mock_data.py                  # Test data generator for development
 ├── requirements.txt                     # Python dependencies
 ├── README.md                           # This documentation
 ├── LICENSE                             # Apache 2.0 license

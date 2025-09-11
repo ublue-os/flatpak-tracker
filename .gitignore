@@ -37,4 +37,5 @@ Thumbs.db
 
 # Generated files
 outdated_packages.json
+mock_outdated.json
 *.log
