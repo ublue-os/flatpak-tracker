@@ -1,1 +1,35 @@
 # flatpak-updater
+
+A GitHub Actions-based tool that monitors flatpak packages from [ublue-os/bluefin](https://github.com/ublue-os/bluefin) for outdated runtimes and automatically creates tracking issues for packages that need updates.
+
+## Purpose
+
+This repository tracks flatpak packages from the [ublue-os/bluefin system-flatpaks.list](https://github.com/ublue-os/bluefin/blob/main/flatpaks/system-flatpaks.list) and identifies which ones are using outdated flatpak runtimes. When outdated runtimes are detected, GitHub issues are automatically created with instructions on how to update them.
+
+## How It Works
+
+1. **Automated Monitoring**: A GitHub Action runs daily to check for runtime updates
+2. **Runtime Analysis**: The script fetches the flatpak list and queries Flathub for runtime information
+3. **Issue Creation**: For each package with an outdated runtime, a GitHub issue is created with:
+   - Current runtime version
+   - Latest available runtime version
+   - Update instructions for maintainers
+   - Links to relevant resources
+
+## Manual Execution
+
+You can manually trigger the runtime check by:
+
+1. Going to the [Actions tab](../../actions)
+2. Selecting the "Check Flatpak Runtime Updates" workflow
+3. Clicking "Run workflow"
+
+## Issues
+
+Each issue created by this bot will be tagged with:
+- `runtime-update`: Indicates this is a runtime update issue
+- `automated`: Shows this was created automatically
+
+## Contributing
+
+If you notice false positives or have suggestions for improving the runtime detection, please open an issue or submit a pull request.
