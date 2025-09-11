@@ -3,7 +3,7 @@ name: Check Flatpak Runtime Updates
 on:
   schedule:
     # Run daily at 9 AM UTC
-    - cron: '0 9 * * *'
+    - cron: '0 9 * * 1'
   workflow_dispatch:
     # Allow manual triggering
 
