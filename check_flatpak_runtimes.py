@@ -90,6 +90,10 @@ class FlatpakRuntimeChecker:
         
         # Known current runtime versions as of 2024/2025
         # These are updated periodically and represent the latest stable versions
+        # TODO: Update these versions when new stable releases are available
+        # - Check GNOME release schedule: https://wiki.gnome.org/ReleasePlanning
+        # - Check Freedesktop SDK releases: https://gitlab.com/freedesktop-sdk/freedesktop-sdk
+        # - Check KDE release schedule: https://community.kde.org/Schedules
         known_latest_versions = {
             'org.gnome.Platform': '48',  # GNOME 48 is current stable as of 2024
             'org.freedesktop.Platform': '24.08',  # Freedesktop 24.08 is current
