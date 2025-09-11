@@ -58,6 +58,10 @@ class IssueGenerator:
 **Latest Available Runtime:** `{package.latest_runtime}`
 **Found in sources:** {sources_info}
 
+### Look for an existing pull request!
+
+The application you're looking for in [github.com/flathub](https://github.com/flathub) - in many cases a pull request might already exist. If this is the case then you can help out by testing the updated flatpak and adding more information to an existing issue! Usually just getting more testers on a new version is enough to help the maintainers! 
+
 ### How to Update the Runtime on Flathub
 
 The runtime for this flatpak appears to be outdated. **For app maintainers**, please follow the official Flathub process:
