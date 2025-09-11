@@ -10,6 +10,15 @@ This repository tracks flatpak packages from multiple ublue-os sources and ident
 
 This helps keep the ISOs small and can be an effective onramp for people who want to get involved helping FlatHub by updating apps that we ship and recommend to all Aurora, Bazzite, and Bluefin images.
 
+## Many of these have existing pull requests open!
+
+In many cases a pull request already exists and the developer just needs more testing on a package, here is an example:
+
+<img width="1436" height="370" alt="image" src="https://github.com/user-attachments/assets/83b3e32e-c158-4cd1-8ffe-4ea7029156d7" />
+
+In this case you can follow those instructions, test the application, and then give the maintainer feedback, this can help direct new users wanting to help to apps that need attention!
+
+
 ## Architecture
 
 The tool uses a two-step approach for better reliability and debugging:
