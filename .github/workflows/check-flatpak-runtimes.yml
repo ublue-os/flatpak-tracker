@@ -36,8 +36,43 @@ jobs:
         sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
         
     - name: Check flatpak runtime updates
+      run: |
+        python check_flatpak_runtimes.py --output outdated_packages.json
+        
+    - name: Display outdated packages summary
+      run: |
+        if [ -f outdated_packages.json ]; then
+          echo "## Outdated Packages Summary"
+          echo "Total checked: $(jq -r '.total_checked' outdated_packages.json)"
+          echo "Outdated count: $(jq -r '.outdated_count' outdated_packages.json)"
+          echo
+          if [ "$(jq -r '.outdated_count' outdated_packages.json)" -gt 0 ]; then
+            echo "Outdated packages:"
+            jq -r '.outdated_packages[] | "- \(.flatpak_id): \(.current_version) → \(.latest_version)"' outdated_packages.json
+          else
+            echo "No outdated packages found."
+          fi
+        else
+          echo "No outdated packages file generated."
+        fi
+        
+    - name: Create issues for outdated packages
+      if: success()
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_REPOSITORY: ${{ github.repository }}
       run: |
-        python check_flatpak_runtimes.py
+        if [ -f outdated_packages.json ] && [ "$(jq -r '.outdated_count' outdated_packages.json)" -gt 0 ]; then
+          echo "Creating issues for outdated packages..."
+          python issue_generator.py outdated_packages.json
+        else
+          echo "No outdated packages to create issues for."
+        fi
+        
+    - name: Upload outdated packages data
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: outdated-packages-data
+        path: outdated_packages.json
+        retention-days: 30

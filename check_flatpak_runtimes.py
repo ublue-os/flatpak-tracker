@@ -8,10 +8,10 @@ import os
 import re
 import subprocess
 import sys
+import json
 import logging
 from typing import Dict, List, Set, Optional, Tuple, NamedTuple
 from dataclasses import dataclass
-from github import Github
 import requests
 
 
@@ -30,10 +30,9 @@ class FlatpakInfo:
 
 
 class FlatpakRuntimeChecker:
-    def __init__(self, github_token: str, repo_name: str):
-        self.github = Github(github_token)
-        self.repo = self.github.get_repo(repo_name)
+    def __init__(self, output_file: str = None):
         self.flathub_base_url = "https://flathub.org/api/v2/appstream"
+        self.output_file = output_file or "outdated_packages.json"
         
     def fetch_flatpak_list(self) -> Dict[str, FlatpakInfo]:
         """Fetch and merge flatpak lists from multiple ublue-os sources with deduplication."""
@@ -243,213 +242,25 @@ class FlatpakRuntimeChecker:
             # If we can't parse versions, assume string comparison
             return current != latest
     
-    def extract_flatpak_id_from_issue_title(self, issue_title: str) -> Optional[str]:
-        """Extract flatpak ID from issue title."""
-        # Issue titles are in format: "Update runtime for app/org.example.App"
-        match = re.search(r'Update runtime for (app/[^\s]+)', issue_title)
-        if match:
-            return match.group(1)
-        return None
-    
-    def generate_issue_labels(self, flatpak_info: FlatpakInfo, current_runtime: str) -> List[str]:
-        """Generate comprehensive labels for GitHub issues."""
-        labels = ['runtime-update', 'automated']
+    def save_outdated_packages(self, outdated_packages: List[Dict]):
+        """Save outdated packages to JSON file for issue generation."""
+        output_data = {
+            "timestamp": __import__('datetime').datetime.now().isoformat(),
+            "total_checked": getattr(self, '_total_checked', 0),
+            "outdated_count": len(outdated_packages),
+            "outdated_packages": outdated_packages
+        }
         
-        # Add source labels
-        for source in flatpak_info.sources:
-            labels.append(source)
-        
-        # Extract runtime information for labels
-        if current_runtime and '/' in current_runtime:
-            runtime_parts = current_runtime.split('/')
-            runtime_name = runtime_parts[0]  # e.g., org.gnome.Platform
-            runtime_version = runtime_parts[-1]  # e.g., 48 or 24.08
-            
-            # Add runtime-specific labels
-            if 'gnome' in runtime_name.lower():
-                labels.append('gnome')
-            elif 'freedesktop' in runtime_name.lower():
-                labels.append('freedesktop')
-            elif 'kde' in runtime_name.lower():
-                labels.append('kde')
-            
-            # Add version labels (sanitized for GitHub)
-            if runtime_version:
-                # Replace dots with dashes for GitHub label compatibility
-                safe_version = runtime_version.replace('.', '-')
-                labels.append(safe_version)
-        
-        return labels
-    
-    def close_resolved_issues(self, flatpak_dict: Dict[str, FlatpakInfo]):
-        """Close issues for flatpaks that are now up to date."""
-        logger.info("Checking for resolved runtime issues to close")
-        
-        # Get all open issues with runtime-update label
         try:
-            open_issues = self.repo.get_issues(state='open', labels=['runtime-update'])
-            
-            closed_count = 0
-            for issue in open_issues:
-                flatpak_id = self.extract_flatpak_id_from_issue_title(issue.title)
-                if not flatpak_id:
-                    logger.debug(f"Could not extract flatpak ID from issue #{issue.number}: {issue.title}")
-                    continue
-                
-                # Check if this flatpak still exists in our current list
-                if flatpak_id not in flatpak_dict:
-                    logger.warning(f"Flatpak {flatpak_id} from issue #{issue.number} no longer in source lists")
-                    continue
-                
-                logger.info(f"Checking if issue #{issue.number} for {flatpak_id} should be closed")
-                
-                # Get current flatpak information
-                flatpak_info = self.get_flatpak_info(flatpak_id)
-                if not flatpak_info:
-                    logger.warning(f"Could not get info for {flatpak_id} when checking issue #{issue.number}")
-                    continue
-                
-                # Extract runtime information
-                current_runtime = self.get_runtime_from_flatpak_info(flatpak_info)
-                if not current_runtime:
-                    logger.warning(f"Could not determine runtime for {flatpak_id} when checking issue #{issue.number}")
-                    continue
-                
-                # Get available runtime versions
-                runtime_name = current_runtime.split('/')[0] if '/' in current_runtime else current_runtime
-                available_versions = self.get_available_runtime_versions(runtime_name)
-                
-                if not available_versions:
-                    logger.warning(f"Could not get available versions for runtime {runtime_name} when checking issue #{issue.number}")
-                    continue
-                
-                # Find the latest version
-                latest_version = max(available_versions) if available_versions else None
-                if not latest_version:
-                    continue
-                    
-                # Extract current version for comparison
-                current_version = current_runtime.split('/')[-1] if '/' in current_runtime else current_runtime
-                
-                # Check if runtime is now up to date
-                if not self.compare_versions(current_version, latest_version):
-                    # Runtime is now up to date, close the issue
-                    close_comment = f"""
-🎉 **Runtime Updated Successfully!**
-
-The runtime for `{flatpak_id}` has been updated and is now up to date:
-- **Current Runtime:** `{current_runtime}`
-- **Latest Available:** `{latest_version}`
-
-This issue is being automatically closed as the runtime update has been completed.
-
-Thank you to the maintainers for keeping the flatpak up to date! 
-
----
-*This issue was automatically closed by the flatpak-updater bot.*
-"""
-                    
-                    try:
-                        issue.create_comment(close_comment.strip())
-                        issue.edit(state='closed')
-                        logger.info(f"Closed resolved issue #{issue.number} for {flatpak_id}")
-                        closed_count += 1
-                    except Exception as e:
-                        logger.error(f"Failed to close issue #{issue.number} for {flatpak_id}: {e}")
-                else:
-                    logger.info(f"Issue #{issue.number} for {flatpak_id} is still valid (runtime outdated)")
-            
-            logger.info(f"Closed {closed_count} resolved runtime issues")
-            
+            with open(self.output_file, 'w') as f:
+                json.dump(output_data, f, indent=2)
+            logger.info(f"Saved {len(outdated_packages)} outdated packages to {self.output_file}")
         except Exception as e:
-            logger.error(f"Failed to check for resolved issues: {e}")
-    
-    def create_or_update_issue(self, flatpak_info: FlatpakInfo, current_runtime: str, latest_runtime: str):
-        """Create or update a GitHub issue for an outdated flatpak with comprehensive labeling."""
-        flatpak_id = flatpak_info.flatpak_id
-        issue_title = f"Update runtime for {flatpak_id}"
-        
-        # Check if issue already exists
-        existing_issues = self.repo.get_issues(state='open', labels=['runtime-update'])
-        for issue in existing_issues:
-            if flatpak_id in issue.title:
-                logger.info(f"Issue already exists for {flatpak_id}: #{issue.number}")
-                return
-        
-        # Generate comprehensive labels
-        labels = self.generate_issue_labels(flatpak_info, current_runtime)
-        
-        # Create sources information for issue body
-        sources_info = ', '.join(flatpak_info.sources)
-        
-        issue_body = f"""
-## Flatpak Runtime Update Needed
-
-**Package:** `{flatpak_id}`
-**Current Runtime:** `{current_runtime}`
-**Latest Available Runtime:** `{latest_runtime}`
-**Found in sources:** {sources_info}
-
-### How to Update the Runtime on Flathub
-
-The runtime for this flatpak appears to be outdated. **For app maintainers**, please follow the official Flathub process:
-
-#### Step 1: Update Your Manifest
-1. Edit your app's manifest file (e.g., `{flatpak_id.replace('app/', '')}.json` or `.yml`)
-2. Update the `runtime` field from `{current_runtime}` to `{latest_runtime}`
-3. Update the `runtime-version` field if using separate version specification
-
-#### Step 2: Update SDK (if needed)
-- If your app uses an SDK, update it to match the new runtime version
-- For GNOME apps: change `org.gnome.Sdk` to the same version as the Platform
-- For Freedesktop apps: change `org.freedesktop.Sdk` to match the Platform version
-
-#### Step 3: Test and Submit
-1. Test your app locally with the new runtime:
-   ```bash
-   flatpak-builder build-dir {flatpak_id.replace('app/', '')}.json --force-clean
-   flatpak-builder --run build-dir {flatpak_id.replace('app/', '')}.json your-app-command
-   ```
-2. Create a pull request to your app's repository on the [flathub GitHub organization](https://github.com/flathub)
-3. The Flathub build system will automatically test and build your update
-
-### Documentation References
-
-- [Flathub Runtime Updates Guide](https://docs.flathub.org/docs/for-app-authors/maintenance#runtime-updates)
-- [Flatpak Manifest Reference](https://docs.flatpak.org/en/latest/manifests.html)
-- [Flathub Submission Guidelines](https://docs.flathub.org/docs/for-app-authors/submission)
-
-### For Users
-
-This runtime update will be handled by the app maintainers. Once updated on Flathub, you can get the latest version with:
-```bash
-flatpak update {flatpak_id.replace('app/', '')}
-```
-
-### Additional Information
-
-This issue was automatically created by the flatpak-updater bot that monitors multiple ublue-os flatpak lists:
-- [ublue-os/bluefin system-flatpaks.list](https://github.com/ublue-os/bluefin/blob/main/flatpaks/system-flatpaks.list)
-- [ublue-os/aurora system-flatpaks.list](https://github.com/ublue-os/aurora/blob/main/flatpaks/system-flatpaks.list)  
-- [ublue-os/bazzite gnome flatpaks](https://github.com/ublue-os/bazzite/blob/main/installer/gnome_flatpaks/flatpaks)
-- [ublue-os/bazzite kde flatpaks](https://github.com/ublue-os/bazzite/blob/main/installer/kde_flatpaks/flatpaks)
-
-If this is a false positive or the runtime is intentionally pinned to an older version for compatibility reasons, please close this issue with a comment explaining why.
-"""
-
-        try:
-            issue = self.repo.create_issue(
-                title=issue_title,
-                body=issue_body.strip(),
-                labels=labels
-            )
-            logger.info(f"Created issue #{issue.number} for {flatpak_id} with labels: {', '.join(labels)}")
-            
-        except Exception as e:
-            logger.error(f"Failed to create issue for {flatpak_id}: {e}")
+            logger.error(f"Failed to save outdated packages: {e}")
+            sys.exit(1)
     
     def check_runtime_updates(self):
-        """Main method to check for runtime updates and create issues."""
+        """Main method to check for runtime updates and save outdated packages to JSON."""
         logger.info("Starting flatpak runtime update check")
         
         # Fetch flatpak dictionary from multiple sources
@@ -457,11 +268,9 @@ If this is a false positive or the runtime is intentionally pinned to an older v
         app_flatpaks = self.get_app_flatpaks(flatpak_dict)
         
         logger.info(f"Checking {len(app_flatpaks)} unique app flatpaks for runtime updates")
+        self._total_checked = len(app_flatpaks)
         
-        # First, close any issues for flatpaks that are now up to date
-        self.close_resolved_issues(flatpak_dict)
-        
-        outdated_count = 0
+        outdated_packages = []
         
         for flatpak_id, flatpak_info in app_flatpaks.items():
             logger.info(f"Checking {flatpak_id} (from: {', '.join(flatpak_info.sources)})")
@@ -506,28 +315,36 @@ If this is a false positive or the runtime is intentionally pinned to an older v
             if self.compare_versions(current_version, latest_version):
                 logger.info(f"Runtime update available for {flatpak_id}: {current_version} -> {latest_version}")
                 latest_runtime = current_runtime.replace(current_version, latest_version)
-                self.create_or_update_issue(flatpak_info, current_runtime, latest_runtime)
-                outdated_count += 1
+                
+                # Add to outdated packages list
+                outdated_package = {
+                    "flatpak_id": flatpak_id,
+                    "sources": flatpak_info.sources,
+                    "current_runtime": current_runtime,
+                    "latest_runtime": latest_runtime,
+                    "current_version": current_version,
+                    "latest_version": latest_version
+                }
+                outdated_packages.append(outdated_package)
             else:
                 logger.info(f"{flatpak_id} runtime is up to date")
         
-        logger.info(f"Runtime check complete. Found {outdated_count} outdated runtimes")
+        logger.info(f"Runtime check complete. Found {len(outdated_packages)} outdated runtimes")
+        
+        # Save outdated packages to JSON file
+        self.save_outdated_packages(outdated_packages)
 
 
 def main():
     """Main entry point."""
-    github_token = os.environ.get('GITHUB_TOKEN')
-    repo_name = os.environ.get('GITHUB_REPOSITORY')
+    import argparse
     
-    if not github_token:
-        logger.error("GITHUB_TOKEN environment variable is required")
-        sys.exit(1)
-        
-    if not repo_name:
-        logger.error("GITHUB_REPOSITORY environment variable is required")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(description='Check for flatpak runtime updates')
+    parser.add_argument('--output', '-o', default='outdated_packages.json',
+                       help='Output JSON file for outdated packages (default: outdated_packages.json)')
+    args = parser.parse_args()
     
-    checker = FlatpakRuntimeChecker(github_token, repo_name)
+    checker = FlatpakRuntimeChecker(output_file=args.output)
     checker.check_runtime_updates()
 
 

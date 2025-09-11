@@ -34,3 +34,7 @@ ENV/
 # OS
 .DS_Store
 Thumbs.db
+
+# Generated files
+outdated_packages.json
+*.log
