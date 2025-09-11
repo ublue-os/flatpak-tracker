@@ -86,9 +86,40 @@ class FlatpakRuntimeChecker:
             return None
     
     def get_available_runtime_versions(self, runtime_name: str) -> List[str]:
-        """Get available versions of a runtime from flathub."""
+        """Get available versions of a runtime from flathub using API and known current versions."""
+        
+        # Known current runtime versions as of 2024/2025
+        # These are updated periodically and represent the latest stable versions
+        known_latest_versions = {
+            'org.gnome.Platform': '48',  # GNOME 48 is current stable as of 2024
+            'org.freedesktop.Platform': '24.08',  # Freedesktop 24.08 is current
+            'org.kde.Platform': '6.8',  # KDE 6.8 is current
+        }
+        
+        # First, try to use the known latest version for common runtimes
+        if runtime_name in known_latest_versions:
+            latest_version = known_latest_versions[runtime_name]
+            logger.info(f"Using known latest version {latest_version} for runtime {runtime_name}")
+            return [latest_version]
+        
+        # Fallback: try to get runtime information from Flathub API
         try:
-            # Use flatpak command to search for runtime versions
+            api_url = f"https://flathub.org/api/v2/appstream/{runtime_name}"
+            response = requests.get(api_url, timeout=30)
+            if response.status_code == 200:
+                runtime_info = response.json()
+                # Try to extract version information from the API response
+                if 'bundle' in runtime_info and 'runtime' in runtime_info['bundle']:
+                    runtime_ref = runtime_info['bundle']['runtime']
+                    # Extract version from runtime reference (e.g., "org.gnome.Platform/x86_64/47" -> "47")
+                    if '/' in runtime_ref:
+                        version = runtime_ref.split('/')[-1]
+                        return [version]
+        except requests.RequestException as e:
+            logger.debug(f"Could not fetch runtime info from API for {runtime_name}: {e}")
+        
+        # Final fallback: try flatpak command (kept for environments where it might work)
+        try:
             cmd = ['flatpak', 'remote-ls', '--runtime', 'flathub', '--columns=name,version', runtime_name]
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
             
@@ -99,17 +130,14 @@ class FlatpakRuntimeChecker:
                         parts = line.split('\t')
                         if len(parts) >= 2 and parts[0].strip() == runtime_name:
                             versions.append(parts[1].strip())
-                return versions
-            else:
-                logger.debug(f"Could not list runtime versions for {runtime_name}")
-                return []
-                
-        except subprocess.TimeoutExpired:
-            logger.warning(f"Timeout while checking runtime versions for {runtime_name}")
-            return []
+                if versions:
+                    return versions
+                    
         except Exception as e:
-            logger.debug(f"Error checking runtime versions for {runtime_name}: {e}")
-            return []
+            logger.debug(f"Flatpak command failed for {runtime_name}: {e}")
+            
+        logger.warning(f"Could not determine latest version for runtime {runtime_name}")
+        return []
     
     def compare_versions(self, current: str, latest: str) -> bool:
         """Compare version strings to determine if current is outdated."""
@@ -147,25 +175,47 @@ class FlatpakRuntimeChecker:
 **Current Runtime:** `{current_runtime}`
 **Latest Available Runtime:** `{latest_runtime}`
 
-### How to Update
+### How to Update the Runtime on Flathub
 
-The runtime for this flatpak appears to be outdated. To update it:
+The runtime for this flatpak appears to be outdated. **For app maintainers**, please follow the official Flathub process:
 
-1. **For maintainers of the flatpak:**
-   - Update the `runtime` field in your flatpak manifest
-   - Change from `{current_runtime}` to `{latest_runtime}`
-   - Test the application with the new runtime
-   - Submit an update to Flathub
+#### Step 1: Update Your Manifest
+1. Edit your app's manifest file (e.g., `{flatpak_id.replace('app/', '')}.json` or `.yml`)
+2. Update the `runtime` field from `{current_runtime}` to `{latest_runtime}`
+3. Update the `runtime-version` field if using separate version specification
 
-2. **For users experiencing issues:**
-   - This is typically handled by the app maintainers
-   - You can try updating with: `flatpak update {flatpak_id.replace('app/', '')}`
+#### Step 2: Update SDK (if needed)
+- If your app uses an SDK, update it to match the new runtime version
+- For GNOME apps: change `org.gnome.Sdk` to the same version as the Platform
+- For Freedesktop apps: change `org.freedesktop.Sdk` to match the Platform version
+
+#### Step 3: Test and Submit
+1. Test your app locally with the new runtime:
+   ```bash
+   flatpak-builder build-dir {flatpak_id.replace('app/', '')}.json --force-clean
+   flatpak-builder --run build-dir {flatpak_id.replace('app/', '')}.json your-app-command
+   ```
+2. Create a pull request to your app's repository on the [flathub GitHub organization](https://github.com/flathub)
+3. The Flathub build system will automatically test and build your update
+
+### Documentation References
+
+- [Flathub Runtime Updates Guide](https://docs.flathub.org/docs/for-app-authors/maintenance#runtime-updates)
+- [Flatpak Manifest Reference](https://docs.flatpak.org/en/latest/manifests.html)
+- [Flathub Submission Guidelines](https://docs.flathub.org/docs/for-app-authors/submission)
+
+### For Users
+
+This runtime update will be handled by the app maintainers. Once updated on Flathub, you can get the latest version with:
+```bash
+flatpak update {flatpak_id.replace('app/', '')}
+```
 
 ### Additional Information
 
 This issue was automatically created by the flatpak-updater bot that monitors the [ublue-os/bluefin system-flatpaks.list](https://github.com/ublue-os/bluefin/blob/main/flatpaks/system-flatpaks.list).
 
-If this is a false positive or the runtime is intentionally pinned to an older version, please close this issue with a comment explaining why.
+If this is a false positive or the runtime is intentionally pinned to an older version for compatibility reasons, please close this issue with a comment explaining why.
 """
 
         try:
