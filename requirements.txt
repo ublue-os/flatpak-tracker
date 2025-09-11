@@ -1,0 +1,2 @@
+requests>=2.31.0
+PyGithub>=1.59.0
