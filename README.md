@@ -30,6 +30,17 @@ Each issue created by this bot will be tagged with:
 - `runtime-update`: Indicates this is a runtime update issue
 - `automated`: Shows this was created automatically
 
+## Development Environment
+
+This repository includes a `.copilot-agent-environment` file that automatically sets up the development environment for GitHub Copilot coding agents. This file preinstalls:
+
+- Python 3.11 and pip
+- Required Python dependencies (requests, PyGithub, etc.)
+- Flatpak and related system packages
+- Flathub remote configuration
+
+This speeds up development by avoiding the need to install dependencies each time.
+
 ## Contributing
 
 If you notice false positives or have suggestions for improving the runtime detection, please open an issue or submit a pull request.
