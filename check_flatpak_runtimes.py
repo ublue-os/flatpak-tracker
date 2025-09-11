@@ -232,7 +232,7 @@ class FlatpakRuntimeChecker:
         known_latest_versions = {
             'org.gnome.Platform': '48',  # GNOME 48 is current stable as of 2024
             'org.freedesktop.Platform': '24.08',  # Freedesktop 24.08 is current
-            'org.kde.Platform': '6.8',  # KDE 6.8 is current
+            'org.kde.Platform': '6.9',  # KDE 6.9 is current
         }
         
         # First, try to use the known latest version for common runtimes
