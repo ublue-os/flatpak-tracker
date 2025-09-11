@@ -1,6 +1,6 @@
-# flatpak-updater
+# Flatpak Tracker
 
-A GitHub Actions-based tool that monitors flatpak packages from [ublue-os/bluefin](https://github.com/ublue-os/bluefin) for outdated runtimes and automatically creates tracking issues for packages that need updates.
+Tracks out of date runtimes in Flatpaks shipped by Universal Blue. HELP WANTED! Go help a Flatpak!
 
 ## Purpose
 
