@@ -71,7 +71,7 @@ jobs:
         
     - name: Upload outdated packages data
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: outdated-packages-data
         path: outdated_packages.json
