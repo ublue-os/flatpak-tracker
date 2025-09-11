@@ -161,12 +161,99 @@ class FlatpakRuntimeChecker:
             # If we can't parse versions, assume string comparison
             return current != latest
     
+    def extract_flatpak_id_from_issue_title(self, issue_title: str) -> Optional[str]:
+        """Extract flatpak ID from issue title."""
+        # Issue titles are in format: "Update runtime for app/org.example.App"
+        import re
+        match = re.search(r'Update runtime for (app/[^\s]+)', issue_title)
+        if match:
+            return match.group(1)
+        return None
+    
+    def close_resolved_issues(self):
+        """Close issues for flatpaks that are now up to date."""
+        logger.info("Checking for resolved runtime issues to close")
+        
+        # Get all open issues with runtime-update label
+        try:
+            open_issues = self.repo.get_issues(state='open', labels=['runtime-update'])
+            
+            closed_count = 0
+            for issue in open_issues:
+                flatpak_id = self.extract_flatpak_id_from_issue_title(issue.title)
+                if not flatpak_id:
+                    logger.debug(f"Could not extract flatpak ID from issue #{issue.number}: {issue.title}")
+                    continue
+                
+                logger.info(f"Checking if issue #{issue.number} for {flatpak_id} should be closed")
+                
+                # Get current flatpak information
+                flatpak_info = self.get_flatpak_info(flatpak_id)
+                if not flatpak_info:
+                    logger.warning(f"Could not get info for {flatpak_id} when checking issue #{issue.number}")
+                    continue
+                
+                # Extract runtime information
+                current_runtime = self.get_runtime_from_flatpak_info(flatpak_info)
+                if not current_runtime:
+                    logger.warning(f"Could not determine runtime for {flatpak_id} when checking issue #{issue.number}")
+                    continue
+                
+                # Get available runtime versions
+                runtime_name = current_runtime.split('/')[0] if '/' in current_runtime else current_runtime
+                available_versions = self.get_available_runtime_versions(runtime_name)
+                
+                if not available_versions:
+                    logger.warning(f"Could not get available versions for runtime {runtime_name} when checking issue #{issue.number}")
+                    continue
+                
+                # Find the latest version
+                latest_version = max(available_versions) if available_versions else None
+                if not latest_version:
+                    continue
+                    
+                # Extract current version for comparison
+                current_version = current_runtime.split('/')[-1] if '/' in current_runtime else current_runtime
+                
+                # Check if runtime is now up to date
+                if not self.compare_versions(current_version, latest_version):
+                    # Runtime is now up to date, close the issue
+                    close_comment = f"""
+🎉 **Runtime Updated Successfully!**
+
+The runtime for `{flatpak_id}` has been updated and is now up to date:
+- **Current Runtime:** `{current_runtime}`
+- **Latest Available:** `{latest_version}`
+
+This issue is being automatically closed as the runtime update has been completed.
+
+Thank you to the maintainers for keeping the flatpak up to date! 
+
+---
+*This issue was automatically closed by the flatpak-updater bot.*
+"""
+                    
+                    try:
+                        issue.create_comment(close_comment.strip())
+                        issue.edit(state='closed')
+                        logger.info(f"Closed resolved issue #{issue.number} for {flatpak_id}")
+                        closed_count += 1
+                    except Exception as e:
+                        logger.error(f"Failed to close issue #{issue.number} for {flatpak_id}: {e}")
+                else:
+                    logger.info(f"Issue #{issue.number} for {flatpak_id} is still valid (runtime outdated)")
+            
+            logger.info(f"Closed {closed_count} resolved runtime issues")
+            
+        except Exception as e:
+            logger.error(f"Failed to check for resolved issues: {e}")
+    
     def create_or_update_issue(self, flatpak_id: str, current_runtime: str, latest_runtime: str):
         """Create or update a GitHub issue for an outdated flatpak."""
         issue_title = f"Update runtime for {flatpak_id}"
         
         # Check if issue already exists
-        existing_issues = self.repo.get_issues(state='open')
+        existing_issues = self.repo.get_issues(state='open', labels=['runtime-update'])
         for issue in existing_issues:
             if flatpak_id in issue.title:
                 logger.info(f"Issue already exists for {flatpak_id}: #{issue.number}")
@@ -236,6 +323,9 @@ If this is a false positive or the runtime is intentionally pinned to an older v
     def check_runtime_updates(self):
         """Main method to check for runtime updates and create issues."""
         logger.info("Starting flatpak runtime update check")
+        
+        # First, close any issues for flatpaks that are now up to date
+        self.close_resolved_issues()
         
         # Fetch flatpak list
         flatpaks = self.fetch_flatpak_list()
