@@ -6,6 +6,8 @@ A GitHub Actions-based tool that monitors flatpak packages from [ublue-os/bluefi
 
 This repository tracks flatpak packages from the [ublue-os/bluefin system-flatpaks.list](https://github.com/ublue-os/bluefin/blob/main/flatpaks/system-flatpaks.list) and identifies which ones are using outdated flatpak runtimes. When outdated runtimes are detected, GitHub issues are automatically created with instructions on how to update them.
 
+This helps keep the ISOs small and can be an effective onramp for people who want to get involved helping FlatHub by updating apps that we ship and recommend to all Aurora, Bazzite, and Bluefin images. 
+
 ## How It Works
 
 1. **Automated Monitoring**: A GitHub Action runs daily to check for runtime updates
