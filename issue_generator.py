@@ -9,7 +9,7 @@ import logging
 import os
 import sys
 import re
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
 from github import Github
 
@@ -47,6 +47,14 @@ class IssueGenerator:
     def generate_issue_labels(self, package: OutdatedPackage) -> List[str]:
         """Generate comprehensive labels for GitHub issues."""
         labels = ['runtime']
+        
+        # Check if package is from default sources (system flatpak lists)
+        # vs bazaar sources (user-configurable)
+        default_sources = {'bluefin', 'aurora', 'bazzite-gnome', 'bazzite-kde'}
+        has_default_source = any(source in default_sources for source in package.sources)
+        
+        if has_default_source:
+            labels.append('default')
         
         # Extract runtime information for labels
         if package.current_runtime and '/' in package.current_runtime:
@@ -173,7 +181,7 @@ If this is a false positive or the runtime is intentionally pinned to an older v
             logger.error(f"Failed to create issue for {package.flatpak_id}: {e}")
             return False
     
-    def close_resolved_issues(self, current_packages: List[str]):
+    def close_resolved_issues(self, current_outdated_packages: List[str], all_tracked_packages: List[str]):
         """Close issues for flatpaks that are no longer outdated or no longer tracked."""
         logger.info("Checking for resolved runtime issues to close")
         
@@ -187,15 +195,49 @@ If this is a false positive or the runtime is intentionally pinned to an older v
                     logger.debug(f"Could not extract flatpak ID from issue #{issue.number}: {issue.title}")
                     continue
                 
-                # Check if this flatpak is still in our outdated list
-                if flatpak_id not in current_packages:
-                    # This package is no longer outdated or no longer tracked
+                # Check if this flatpak is no longer tracked at all
+                if flatpak_id not in all_tracked_packages:
+                    # This package is no longer being tracked in any source
+                    close_comment = f"""
+🔄 **Package No Longer Tracked**
+
+This issue is being automatically closed because:
+- The package `{flatpak_id}` is no longer included in any of the monitored flatpak lists
+- We only track packages that are currently shipped in ublue-os distributions
+
+**What this means:**
+- This package was removed from the system flatpak lists in the source repositories
+- Historical applications that are no longer shipped are automatically cleaned up
+
+If this package should still be tracked, please verify it exists in one of these current lists:
+- [ublue-os/bluefin system-flatpaks.list](https://github.com/ublue-os/bluefin/blob/main/flatpaks/system-flatpaks.list)
+- [ublue-os/aurora system-flatpaks.list](https://github.com/ublue-os/aurora/blob/main/flatpaks/system-flatpaks.list)  
+- [ublue-os/bazzite gnome flatpaks](https://github.com/ublue-os/bazzite/blob/main/installer/gnome_flatpaks/flatpaks)
+- [ublue-os/bazzite kde flatpaks](https://github.com/ublue-os/bazzite/blob/main/installer/kde_flatpaks/flatpaks)
+- [ublue-os/bluefin bazaar config](https://github.com/ublue-os/bluefin/blob/main/system_files/shared/usr/share/ublue-os/bazaar/config.yaml)
+- [ublue-os/aurora bazaar config](https://github.com/ublue-os/aurora/blob/main/system_files/shared/usr/share/ublue-os/bazaar/config.yaml)
+
+---
+*This issue was automatically closed by the flatpak-updater bot.*
+""".strip()
+                    
+                    try:
+                        issue.create_comment(close_comment)
+                        issue.edit(state='closed')
+                        logger.info(f"Closed issue #{issue.number} for no longer tracked package {flatpak_id}")
+                        closed_count += 1
+                    except Exception as e:
+                        logger.error(f"Failed to close issue #{issue.number} for {flatpak_id}: {e}")
+                
+                # Check if this flatpak is still tracked but no longer outdated
+                elif flatpak_id not in current_outdated_packages:
+                    # This package is still tracked but runtime is now up to date
                     close_comment = f"""
 🎉 **Runtime Issue Resolved!**
 
 This issue is being automatically closed because:
-- The runtime for `{flatpak_id}` is now up to date, OR
-- The package is no longer being tracked in the monitored flatpak lists
+- The runtime for `{flatpak_id}` is now up to date
+- The package is still being tracked and monitored
 
 If this was closed in error, please reopen the issue.
 
@@ -211,14 +253,14 @@ If this was closed in error, please reopen the issue.
                     except Exception as e:
                         logger.error(f"Failed to close issue #{issue.number} for {flatpak_id}: {e}")
             
-            logger.info(f"Closed {closed_count} resolved runtime issues")
+            logger.info(f"Closed {closed_count} resolved or obsolete runtime issues")
             
         except Exception as e:
             logger.error(f"Failed to check for resolved issues: {e}")
 
 
-def load_outdated_packages(file_path: str) -> List[OutdatedPackage]:
-    """Load outdated packages from JSON file."""
+def load_outdated_packages(file_path: str) -> Tuple[List[OutdatedPackage], List[str]]:
+    """Load outdated packages from JSON file and return both outdated and all tracked packages."""
     try:
         with open(file_path, 'r') as f:
             data = json.load(f)
@@ -235,11 +277,14 @@ def load_outdated_packages(file_path: str) -> List[OutdatedPackage]:
             )
             packages.append(package)
         
-        return packages
+        # Get all tracked packages for cleanup logic
+        all_tracked_packages = data.get('all_tracked_packages', [])
+        
+        return packages, all_tracked_packages
         
     except Exception as e:
         logger.error(f"Failed to load outdated packages from {file_path}: {e}")
-        return []
+        return [], []
 
 
 def main():
@@ -265,20 +310,21 @@ def main():
         logger.error(f"Outdated packages file not found: {outdated_file}")
         sys.exit(1)
     
-    # Load outdated packages
-    packages = load_outdated_packages(outdated_file)
-    if not packages:
-        logger.info("No outdated packages found or failed to load file")
+    # Load outdated packages and all tracked packages
+    packages, all_tracked_packages = load_outdated_packages(outdated_file)
+    if not packages and not all_tracked_packages:
+        logger.info("No data found or failed to load file")
         sys.exit(0)
     
     logger.info(f"Found {len(packages)} outdated packages")
+    logger.info(f"Tracking {len(all_tracked_packages)} total packages")
     
     # Initialize issue generator
     generator = IssueGenerator(github_token, repo_name)
     
-    # Close resolved issues first
-    current_flatpak_ids = [pkg.flatpak_id for pkg in packages]
-    generator.close_resolved_issues(current_flatpak_ids)
+    # Close resolved issues first - pass both lists
+    current_outdated_flatpak_ids = [pkg.flatpak_id for pkg in packages]
+    generator.close_resolved_issues(current_outdated_flatpak_ids, all_tracked_packages)
     
     # Create issues for outdated packages
     created_count = 0

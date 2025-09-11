@@ -11,12 +11,12 @@ def create_mock_data():
     """Create mock outdated packages data for testing."""
     mock_data = {
         "timestamp": datetime.now().isoformat(),
-        "total_checked": 5,
-        "outdated_count": 3,
+        "total_checked": 8,
+        "outdated_count": 4,
         "outdated_packages": [
             {
                 "flatpak_id": "app/org.gnome.Calculator",
-                "sources": ["bluefin", "aurora"],
+                "sources": ["bluefin", "aurora"],  # DEFAULT sources
                 "current_runtime": "org.gnome.Platform/x86_64/46",
                 "latest_runtime": "org.gnome.Platform/x86_64/48",
                 "current_version": "46",
@@ -24,7 +24,7 @@ def create_mock_data():
             },
             {
                 "flatpak_id": "app/org.mozilla.firefox",
-                "sources": ["bluefin"],
+                "sources": ["bluefin"],  # DEFAULT source
                 "current_runtime": "org.freedesktop.Platform/x86_64/22.08",
                 "latest_runtime": "org.freedesktop.Platform/x86_64/24.08",
                 "current_version": "22.08",
@@ -32,12 +32,30 @@ def create_mock_data():
             },
             {
                 "flatpak_id": "app/org.kde.krita",
-                "sources": ["bazzite-gnome", "bazzite-kde"],
+                "sources": ["bazzite-gnome", "bazzite-kde"],  # DEFAULT sources
                 "current_runtime": "org.kde.Platform/x86_64/6.6",
                 "latest_runtime": "org.kde.Platform/x86_64/6.8",
                 "current_version": "6.6",
                 "latest_version": "6.8"
+            },
+            {
+                "flatpak_id": "app/com.example.BazaarApp",
+                "sources": ["bluefin-bazaar", "aurora-bazaar"],  # NON-DEFAULT sources (bazaar only)
+                "current_runtime": "org.gnome.Platform/x86_64/47",
+                "latest_runtime": "org.gnome.Platform/x86_64/48",
+                "current_version": "47",
+                "latest_version": "48"
             }
+        ],
+        "all_tracked_packages": [
+            "app/org.gnome.Calculator",
+            "app/org.mozilla.firefox", 
+            "app/org.kde.krita",
+            "app/com.example.BazaarApp",
+            "app/org.gnome.TextEditor",  # tracked but not outdated
+            "app/org.gimp.GIMP",         # tracked but not outdated
+            "app/org.libreoffice.LibreOffice",  # tracked but not outdated
+            "app/com.spotify.Client"     # tracked but not outdated
         ]
     }
     

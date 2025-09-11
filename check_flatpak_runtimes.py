@@ -296,19 +296,24 @@ class FlatpakRuntimeChecker:
             # If we can't parse versions, assume string comparison
             return current != latest
     
-    def save_outdated_packages(self, outdated_packages: List[Dict]):
+    def save_outdated_packages(self, outdated_packages: List[Dict], all_tracked_flatpaks: Dict[str, any]):
         """Save outdated packages to JSON file for issue generation."""
+        # Convert all tracked flatpaks to a list for easier processing
+        all_tracked_list = list(all_tracked_flatpaks.keys())
+        
         output_data = {
             "timestamp": __import__('datetime').datetime.now().isoformat(),
             "total_checked": getattr(self, '_total_checked', 0),
             "outdated_count": len(outdated_packages),
-            "outdated_packages": outdated_packages
+            "outdated_packages": outdated_packages,
+            "all_tracked_packages": all_tracked_list
         }
         
         try:
             with open(self.output_file, 'w') as f:
                 json.dump(output_data, f, indent=2)
             logger.info(f"Saved {len(outdated_packages)} outdated packages to {self.output_file}")
+            logger.info(f"Total tracked packages: {len(all_tracked_list)}")
         except Exception as e:
             logger.error(f"Failed to save outdated packages: {e}")
             sys.exit(1)
@@ -386,7 +391,7 @@ class FlatpakRuntimeChecker:
         logger.info(f"Runtime check complete. Found {len(outdated_packages)} outdated runtimes")
         
         # Save outdated packages to JSON file
-        self.save_outdated_packages(outdated_packages)
+        self.save_outdated_packages(outdated_packages, app_flatpaks)
 
 
 def main():

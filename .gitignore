@@ -39,3 +39,9 @@ Thumbs.db
 outdated_packages.json
 mock_outdated.json
 *.log
+
+# Test files (temporary)
+*_test.json
+current_packages.json
+test_data.json
+updated_test.json
