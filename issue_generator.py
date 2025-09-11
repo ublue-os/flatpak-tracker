@@ -46,11 +46,7 @@ class IssueGenerator:
     
     def generate_issue_labels(self, package: OutdatedPackage) -> List[str]:
         """Generate comprehensive labels for GitHub issues."""
-        labels = ['runtime-update', 'automated']
-        
-        # Add source labels
-        for source in package.sources:
-            labels.append(source)
+        labels = ['runtime']
         
         # Extract runtime information for labels
         if package.current_runtime and '/' in package.current_runtime:
@@ -142,7 +138,7 @@ If this is a false positive or the runtime is intentionally pinned to an older v
     def issue_exists(self, flatpak_id: str) -> bool:
         """Check if an issue already exists for the given flatpak ID."""
         try:
-            existing_issues = self.repo.get_issues(state='open', labels=['runtime-update'])
+            existing_issues = self.repo.get_issues(state='open', labels=['runtime'])
             for issue in existing_issues:
                 if flatpak_id in issue.title:
                     logger.info(f"Issue already exists for {flatpak_id}: #{issue.number}")
@@ -182,7 +178,7 @@ If this is a false positive or the runtime is intentionally pinned to an older v
         logger.info("Checking for resolved runtime issues to close")
         
         try:
-            open_issues = self.repo.get_issues(state='open', labels=['runtime-update'])
+            open_issues = self.repo.get_issues(state='open', labels=['runtime'])
             closed_count = 0
             
             for issue in open_issues:
