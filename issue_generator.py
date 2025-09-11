@@ -44,43 +44,7 @@ class IssueGenerator:
             return match.group(1)
         return None
     
-    def generate_issue_labels(self, package: OutdatedPackage) -> List[str]:
-        """Generate comprehensive labels for GitHub issues."""
-        labels = ['runtime']
-        
-        # Check if package is from default sources (system flatpak lists)
-        # vs bazaar sources (user-configurable)
-        default_sources = {'bluefin', 'aurora', 'bazzite-gnome', 'bazzite-kde'}
-        has_default_source = any(source in default_sources for source in package.sources)
-        
-        if has_default_source:
-            labels.append('default')
-        
-        # Extract runtime information for labels
-        if package.current_runtime and '/' in package.current_runtime:
-            runtime_parts = package.current_runtime.split('/')
-            runtime_name = runtime_parts[0]  # e.g., org.gnome.Platform
-            
-            # Generate combined runtime-version labels following Flathub convention
-            runtime_label = None
-            if 'gnome' in runtime_name.lower():
-                runtime_label = 'gnome'
-            elif 'freedesktop' in runtime_name.lower():
-                runtime_label = 'freedesktop'
-            elif 'kde' in runtime_name.lower():
-                runtime_label = 'kde'
-            
-            # Combine runtime with version if we have both
-            if runtime_label and package.latest_version:
-                # Replace dots with dashes for GitHub label compatibility
-                safe_version = package.latest_version.replace('.', '-')
-                combined_label = f'{runtime_label}-{safe_version}'
-                labels.append(combined_label)
-            elif runtime_label:
-                # Fallback to just runtime if no version available
-                labels.append(runtime_label)
-        
-        return labels
+
     
     def create_issue_body(self, package: OutdatedPackage) -> str:
         """Generate the issue body content."""
@@ -147,7 +111,7 @@ If this is a false positive or the runtime is intentionally pinned to an older v
     def issue_exists(self, flatpak_id: str) -> bool:
         """Check if an issue already exists for the given flatpak ID."""
         try:
-            existing_issues = self.repo.get_issues(state='open', labels=['runtime'])
+            existing_issues = self.repo.get_issues(state='open')
             for issue in existing_issues:
                 if flatpak_id in issue.title:
                     logger.info(f"Issue already exists for {flatpak_id}: #{issue.number}")
@@ -165,17 +129,15 @@ If this is a false positive or the runtime is intentionally pinned to an older v
         if self.issue_exists(package.flatpak_id):
             return False
         
-        # Generate labels and body
-        labels = self.generate_issue_labels(package)
+        # Generate body content
         body = self.create_issue_body(package)
         
         try:
             issue = self.repo.create_issue(
                 title=issue_title,
-                body=body,
-                labels=labels
+                body=body
             )
-            logger.info(f"Created issue #{issue.number} for {package.flatpak_id} with labels: {', '.join(labels)}")
+            logger.info(f"Created issue #{issue.number} for {package.flatpak_id}")
             return True
             
         except Exception as e:
@@ -187,7 +149,7 @@ If this is a false positive or the runtime is intentionally pinned to an older v
         logger.info("Checking for resolved runtime issues to close")
         
         try:
-            open_issues = self.repo.get_issues(state='open', labels=['runtime'])
+            open_issues = self.repo.get_issues(state='open')
             closed_count = 0
             
             for issue in open_issues:
