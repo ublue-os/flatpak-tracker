@@ -57,19 +57,24 @@ class IssueGenerator:
             runtime_parts = package.current_runtime.split('/')
             runtime_name = runtime_parts[0]  # e.g., org.gnome.Platform
             
-            # Add runtime-specific labels
+            # Generate combined runtime-version labels following Flathub convention
+            runtime_label = None
             if 'gnome' in runtime_name.lower():
-                labels.append('gnome')
+                runtime_label = 'gnome'
             elif 'freedesktop' in runtime_name.lower():
-                labels.append('freedesktop')
+                runtime_label = 'freedesktop'
             elif 'kde' in runtime_name.lower():
-                labels.append('kde')
+                runtime_label = 'kde'
             
-            # Add version labels (sanitized for GitHub)
-            if package.latest_version:
+            # Combine runtime with version if we have both
+            if runtime_label and package.latest_version:
                 # Replace dots with dashes for GitHub label compatibility
                 safe_version = package.latest_version.replace('.', '-')
-                labels.append(f'target-{safe_version}')
+                combined_label = f'{runtime_label}-{safe_version}'
+                labels.append(combined_label)
+            elif runtime_label:
+                # Fallback to just runtime if no version available
+                labels.append(runtime_label)
         
         return labels
     
@@ -128,6 +133,8 @@ This issue was automatically created by the flatpak-updater bot that monitors mu
 - [ublue-os/aurora system-flatpaks.list](https://github.com/ublue-os/aurora/blob/main/flatpaks/system-flatpaks.list)  
 - [ublue-os/bazzite gnome flatpaks](https://github.com/ublue-os/bazzite/blob/main/installer/gnome_flatpaks/flatpaks)
 - [ublue-os/bazzite kde flatpaks](https://github.com/ublue-os/bazzite/blob/main/installer/kde_flatpaks/flatpaks)
+- [ublue-os/bluefin bazaar config](https://github.com/ublue-os/bluefin/blob/main/system_files/shared/usr/share/ublue-os/bazaar/config.yaml)
+- [ublue-os/aurora bazaar config](https://github.com/ublue-os/aurora/blob/main/system_files/shared/usr/share/ublue-os/bazaar/config.yaml)
 
 If this is a false positive or the runtime is intentionally pinned to an older version for compatibility reasons, please close this issue with a comment explaining why.
 """.strip()
