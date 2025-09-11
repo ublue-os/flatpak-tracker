@@ -13,6 +13,7 @@ import logging
 from typing import Dict, List, Set, Optional, Tuple, NamedTuple
 from dataclasses import dataclass
 import requests
+import yaml
 
 
 # Configure logging
@@ -54,6 +55,15 @@ class FlatpakRuntimeChecker:
             'bazzite-kde': {
                 'url': 'https://raw.githubusercontent.com/ublue-os/bazzite/main/installer/kde_flatpaks/flatpaks',
                 'format': 'full_ref'  # app/package/arch/branch format
+            },
+            # Bazaar config sources
+            'bluefin-bazaar': {
+                'url': 'https://raw.githubusercontent.com/ublue-os/bluefin/main/system_files/shared/usr/share/ublue-os/bazaar/config.yaml',
+                'format': 'bazaar_yaml'  # YAML format with appids in sections
+            },
+            'aurora-bazaar': {
+                'url': 'https://raw.githubusercontent.com/ublue-os/aurora/main/system_files/shared/usr/share/ublue-os/bazaar/config.yaml',
+                'format': 'bazaar_yaml'  # YAML format with appids in sections
             }
         }
         
@@ -68,29 +78,35 @@ class FlatpakRuntimeChecker:
                 response.raise_for_status()
                 
                 source_flatpaks = []
-                for line in response.text.strip().split('\n'):
-                    line = line.strip()
-                    if line and not line.startswith('#'):
-                        # Normalize to app/package.id format
-                        if source_config['format'] == 'app_prefix':
-                            # Already correct format: app/package.id
-                            flatpak_id = line
-                        elif source_config['format'] == 'no_prefix':
-                            # Add app/ prefix: package.id -> app/package.id
-                            flatpak_id = f"app/{line}"
-                        elif source_config['format'] == 'full_ref':
-                            # Extract package ID: app/package.id/arch/branch -> app/package.id
-                            parts = line.split('/')
-                            if len(parts) >= 2:
-                                flatpak_id = f"{parts[0]}/{parts[1]}"
+                
+                if source_config['format'] == 'bazaar_yaml':
+                    # Parse YAML and extract appids from all sections
+                    source_flatpaks = self._parse_bazaar_yaml(response.text)
+                else:
+                    # Handle existing list formats
+                    for line in response.text.strip().split('\n'):
+                        line = line.strip()
+                        if line and not line.startswith('#'):
+                            # Normalize to app/package.id format
+                            if source_config['format'] == 'app_prefix':
+                                # Already correct format: app/package.id
+                                flatpak_id = line
+                            elif source_config['format'] == 'no_prefix':
+                                # Add app/ prefix: package.id -> app/package.id
+                                flatpak_id = f"app/{line}"
+                            elif source_config['format'] == 'full_ref':
+                                # Extract package ID: app/package.id/arch/branch -> app/package.id
+                                parts = line.split('/')
+                                if len(parts) >= 2:
+                                    flatpak_id = f"{parts[0]}/{parts[1]}"
+                                else:
+                                    flatpak_id = line
                             else:
                                 flatpak_id = line
-                        else:
-                            flatpak_id = line
-                        
-                        # Only include app flatpaks (not runtimes)
-                        if flatpak_id.startswith('app/'):
-                            source_flatpaks.append(flatpak_id)
+                            
+                            # Only include app flatpaks (not runtimes)
+                            if flatpak_id.startswith('app/'):
+                                source_flatpaks.append(flatpak_id)
                 
                 logger.info(f"Found {len(source_flatpaks)} flatpaks from {source_name}")
                 
@@ -110,6 +126,10 @@ class FlatpakRuntimeChecker:
                 logger.error(f"Failed to fetch flatpak list from {source_name}: {e}")
                 # Continue with other sources instead of failing completely
                 continue
+            except Exception as e:
+                logger.error(f"Error processing {source_name}: {e}")
+                # Continue with other sources instead of failing completely
+                continue
         
         total_unique = len(flatpak_dict)
         total_sources = sum(len(info.sources) for info in flatpak_dict.values())
@@ -125,6 +145,40 @@ class FlatpakRuntimeChecker:
             logger.info(f"  {source}: {count} flatpaks")
         
         return flatpak_dict
+    
+    def _parse_bazaar_yaml(self, yaml_content: str) -> List[str]:
+        """Parse bazaar config YAML and extract all appids from all sections."""
+        try:
+            # Parse the YAML content
+            config = yaml.safe_load(yaml_content)
+            
+            flatpaks = []
+            
+            # The bazaar config has a 'sections' key containing a list of sections
+            if isinstance(config, dict) and 'sections' in config:
+                sections = config['sections']
+                if isinstance(sections, list):
+                    for section in sections:
+                        if isinstance(section, dict) and 'appids' in section:
+                            appids = section['appids']
+                            if isinstance(appids, list):
+                                for app_id in appids:
+                                    if isinstance(app_id, str) and app_id.strip():
+                                        # Convert to app/package.id format
+                                        app_id = app_id.strip()
+                                        if not app_id.startswith('app/'):
+                                            app_id = f"app/{app_id}"
+                                        flatpaks.append(app_id)
+            
+            logger.debug(f"Parsed {len(flatpaks)} flatpaks from bazaar YAML")
+            return flatpaks
+            
+        except yaml.YAMLError as e:
+            logger.error(f"Failed to parse YAML: {e}")
+            return []
+        except Exception as e:
+            logger.error(f"Error processing bazaar YAML: {e}")
+            return []
     
     def get_app_flatpaks(self, flatpak_dict: Dict[str, FlatpakInfo]) -> Dict[str, FlatpakInfo]:
         """Filter to get only app flatpaks (not runtimes) - all should already be apps."""
