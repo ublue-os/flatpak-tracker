@@ -114,41 +114,88 @@ This issue was automatically created by the flatpak-updater bot that monitors mu
 If this is a false positive or the runtime is intentionally pinned to an older version for compatibility reasons, please close this issue with a comment explaining why.
 """.strip()
     
-    def issue_exists(self, flatpak_id: str) -> bool:
-        """Check if an issue already exists for the given flatpak ID."""
+    def find_existing_issue(self, flatpak_id: str) -> Optional[any]:
+        """Find an existing issue for the given flatpak ID using exact matching."""
         try:
             existing_issues = self.repo.get_issues(state='open')
             for issue in existing_issues:
-                if flatpak_id in issue.title:
-                    logger.info(f"Issue already exists for {flatpak_id}: #{issue.number}")
-                    return True
-            return False
+                extracted_id = self.extract_flatpak_id_from_issue_title(issue.title)
+                if extracted_id == flatpak_id:
+                    logger.info(f"Found existing issue for {flatpak_id}: #{issue.number}")
+                    return issue
+            return None
         except Exception as e:
             logger.error(f"Error checking existing issues: {e}")
-            return True  # Assume it exists to avoid duplicates on error
+            return None
     
-    def create_issue(self, package: OutdatedPackage) -> bool:
-        """Create a GitHub issue for an outdated package."""
+    def create_or_update_issue(self, package: OutdatedPackage) -> bool:
+        """Create a GitHub issue for an outdated package or update existing one."""
         issue_title = f"Update runtime for {package.flatpak_id}"
         
         # Check if issue already exists
-        if self.issue_exists(package.flatpak_id):
-            return False
+        existing_issue = self.find_existing_issue(package.flatpak_id)
         
         # Generate body content
         body = self.create_issue_body(package)
         
-        try:
-            issue = self.repo.create_issue(
-                title=issue_title,
-                body=body
-            )
-            logger.info(f"Created issue #{issue.number} for {package.flatpak_id}")
-            return True
-            
-        except Exception as e:
-            logger.error(f"Failed to create issue for {package.flatpak_id}: {e}")
-            return False
+        if existing_issue:
+            # Update existing issue
+            try:
+                # Check if the issue content needs updating
+                current_body = existing_issue.body or ""
+                
+                # Extract current runtime info from existing issue to check if update is needed
+                current_runtime_match = re.search(r'\*\*Current Runtime:\*\* `([^`]+)`', current_body)
+                current_runtime_in_issue = current_runtime_match.group(1) if current_runtime_match else None
+                
+                latest_runtime_match = re.search(r'\*\*Latest Available Runtime:\*\* `([^`]+)`', current_body)
+                latest_runtime_in_issue = latest_runtime_match.group(1) if latest_runtime_match else None
+                
+                # Update if runtime information has changed
+                needs_update = (
+                    current_runtime_in_issue != package.current_runtime or
+                    latest_runtime_in_issue != package.latest_runtime
+                )
+                
+                if needs_update:
+                    existing_issue.edit(title=issue_title, body=body)
+                    logger.info(f"Updated existing issue #{existing_issue.number} for {package.flatpak_id}")
+                    
+                    # Add a comment indicating the issue was updated
+                    update_comment = f"""
+🔄 **Issue Updated**
+
+This issue has been automatically updated with the latest runtime information:
+- **Current Runtime**: `{package.current_runtime}`  
+- **Latest Available Runtime**: `{package.latest_runtime}`
+
+The runtime update instructions remain the same.
+
+---
+*This issue was automatically updated by the flatpak-updater bot.*
+""".strip()
+                    existing_issue.create_comment(update_comment)
+                    return True
+                else:
+                    logger.info(f"Issue #{existing_issue.number} for {package.flatpak_id} is already up to date")
+                    return False
+                    
+            except Exception as e:
+                logger.error(f"Failed to update existing issue #{existing_issue.number} for {package.flatpak_id}: {e}")
+                return False
+        else:
+            # Create new issue
+            try:
+                issue = self.repo.create_issue(
+                    title=issue_title,
+                    body=body
+                )
+                logger.info(f"Created new issue #{issue.number} for {package.flatpak_id}")
+                return True
+                
+            except Exception as e:
+                logger.error(f"Failed to create issue for {package.flatpak_id}: {e}")
+                return False
     
     def close_resolved_issues(self, current_outdated_packages: List[str], all_tracked_packages: List[str]):
         """Close issues for flatpaks that are no longer outdated or no longer tracked."""
@@ -296,13 +343,13 @@ def main():
     current_outdated_flatpak_ids = [pkg.flatpak_id for pkg in packages]
     generator.close_resolved_issues(current_outdated_flatpak_ids, all_tracked_packages)
     
-    # Create issues for outdated packages
-    created_count = 0
+    # Create or update issues for outdated packages
+    created_or_updated_count = 0
     for package in packages:
-        if generator.create_issue(package):
-            created_count += 1
+        if generator.create_or_update_issue(package):
+            created_or_updated_count += 1
     
-    logger.info(f"Created {created_count} new issues for outdated packages")
+    logger.info(f"Created or updated {created_or_updated_count} issues for outdated packages")
 
 
 if __name__ == '__main__':
