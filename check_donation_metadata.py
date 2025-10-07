@@ -470,8 +470,17 @@ def main():
         print("\n" + "="*60)
         print("Creating GitHub issues...")
         print("="*60)
+        
+        # Limit to 25 issues per run to avoid overwhelming the tracker
+        MAX_ISSUES_PER_RUN = 25
+        issues_to_create = missing_or_unreachable[:MAX_ISSUES_PER_RUN]
+        
+        if len(missing_or_unreachable) > MAX_ISSUES_PER_RUN:
+            print(f"Note: Limiting to {MAX_ISSUES_PER_RUN} issues per run")
+            print(f"      {len(missing_or_unreachable) - MAX_ISSUES_PER_RUN} issues will be created in subsequent runs")
+        
         created_count = 0
-        for donation_info in missing_or_unreachable:
+        for donation_info in issues_to_create:
             if checker.create_issue_for_missing_donation(donation_info):
                 created_count += 1
         print(f"\nCreated {created_count} new issues")
