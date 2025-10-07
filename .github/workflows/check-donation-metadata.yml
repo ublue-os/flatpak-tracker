@@ -1,0 +1,54 @@
+name: Check Donation Metadata
+
+on:
+  schedule:
+    # Run weekly on Mondays at 10 AM UTC
+    - cron: '0 10 * * 1'
+  workflow_dispatch:
+    # Allow manual triggering
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  check-donation-metadata:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      
+    - name: Set up Python
+      uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6
+      with:
+        python-version: '3.13'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Generate flatpak list
+      run: |
+        python check_flatpak_runtimes.py --output flatpak_list.json
+        
+    - name: Check donation metadata
+      run: |
+        python check_donation_metadata.py --input flatpak_list.json
+        
+    - name: Create issues for missing/unreachable donation links
+      if: success()
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+      run: |
+        python check_donation_metadata.py --input flatpak_list.json --create-issues
+        
+    - name: Upload flatpak list data
+      if: always()
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      with:
+        name: flatpak-list-data
+        path: flatpak_list.json
+        retention-days: 30
