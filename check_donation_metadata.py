@@ -67,6 +67,71 @@ class DonationMetadataChecker:
             logger.debug(f"Could not extract donation URL: {e}")
             return None
     
+    def is_gnome_or_kde_app(self, flatpak_id: str, flatpak_info: Dict) -> bool:
+        """Check if the app is a GNOME or KDE application.
+        
+        GNOME and KDE have their own donation infrastructure, so we skip them.
+        """
+        app_id = flatpak_id.replace('app/', '')
+        
+        # Check by app ID prefix
+        if app_id.startswith('org.gnome.') or app_id.startswith('org.kde.'):
+            return True
+        
+        # Check by project group in metadata
+        try:
+            if 'project_group' in flatpak_info:
+                project_group = flatpak_info['project_group'].lower()
+                if project_group in ['gnome', 'kde']:
+                    return True
+        except (KeyError, TypeError, AttributeError):
+            pass
+        
+        return False
+    
+    def is_commercial_or_closed_license(self, flatpak_info: Dict) -> bool:
+        """Check if the app is commercial or has a closed/proprietary license.
+        
+        Commercial apps with closed licenses should not be tracked for donation links.
+        """
+        try:
+            if 'project_license' in flatpak_info:
+                license_str = flatpak_info['project_license'].lower()
+                
+                # Check for proprietary or closed license keywords
+                proprietary_keywords = [
+                    'proprietary',
+                    'commercial',
+                    'closed',
+                    'all rights reserved',
+                    'copyright only',
+                    'licenseref-proprietary'
+                ]
+                
+                for keyword in proprietary_keywords:
+                    if keyword in license_str:
+                        return True
+        except (KeyError, TypeError, AttributeError):
+            pass
+        
+        return False
+    
+    def should_skip_app(self, flatpak_id: str, flatpak_info: Dict) -> Tuple[bool, Optional[str]]:
+        """Determine if an app should be skipped for donation checking.
+        
+        Returns:
+            Tuple of (should_skip, reason)
+        """
+        # Check if it's a GNOME or KDE app
+        if self.is_gnome_or_kde_app(flatpak_id, flatpak_info):
+            return True, "GNOME/KDE app with own donation infrastructure"
+        
+        # Check if it's a commercial/closed license app
+        if self.is_commercial_or_closed_license(flatpak_info):
+            return True, "Commercial/closed-license application"
+        
+        return False, None
+    
     def check_url_reachable(self, url: str) -> Tuple[bool, Optional[str]]:
         """Check if a URL is reachable."""
         try:
@@ -91,6 +156,12 @@ class DonationMetadataChecker:
             flatpak_info = self.get_flatpak_info(flatpak_id)
             if not flatpak_info:
                 logger.warning(f"Could not fetch metadata for {flatpak_id}, skipping")
+                continue
+            
+            # Check if this app should be skipped (GNOME/KDE or commercial)
+            should_skip, skip_reason = self.should_skip_app(flatpak_id, flatpak_info)
+            if should_skip:
+                logger.info(f"  ⏭️  Skipping {flatpak_id}: {skip_reason}")
                 continue
             
             # Check for donation URL
@@ -237,6 +308,86 @@ Look for the `urls.donation` field in the JSON response.
         except Exception as e:
             logger.error(f"Error checking existing issues: {e}")
             return None
+    
+    def close_filtered_issues(self, flatpaks: Dict[str, any]):
+        """Close issues for apps that should now be filtered (GNOME/KDE or commercial).
+        
+        This ensures that existing issues for GNOME/KDE apps or commercial apps
+        are automatically closed to focus on individual app maintainers.
+        """
+        if not self.repo:
+            logger.warning("GitHub repository not initialized, cannot close issues")
+            return
+        
+        logger.info("Checking for donation issues to close (filtered apps)...")
+        
+        try:
+            open_issues = self.repo.get_issues(state='open', labels=['donation-metadata'])
+            closed_count = 0
+            
+            for issue in open_issues:
+                # Extract flatpak ID from issue title
+                # Title format: "Donation Link missing for app.id" or "Donation Link unreachable for app.id"
+                app_id = None
+                if " for " in issue.title:
+                    app_id = issue.title.split(" for ")[-1].strip()
+                
+                if not app_id:
+                    logger.debug(f"Could not extract app ID from issue #{issue.number}: {issue.title}")
+                    continue
+                
+                flatpak_id = f"app/{app_id}"
+                
+                # Check if this app is in our tracked list
+                if flatpak_id not in flatpaks:
+                    logger.debug(f"App {flatpak_id} from issue #{issue.number} not in tracked list")
+                    continue
+                
+                # Get flatpak metadata to check if it should be filtered
+                flatpak_info = self.get_flatpak_info(flatpak_id)
+                if not flatpak_info:
+                    logger.warning(f"Could not fetch metadata for {flatpak_id} to check filtering")
+                    continue
+                
+                # Check if this app should be skipped
+                should_skip, skip_reason = self.should_skip_app(flatpak_id, flatpak_info)
+                
+                if should_skip:
+                    # This app should be filtered, close the issue
+                    close_comment = f"""🔄 **Issue Automatically Closed**
+
+This issue is being automatically closed because:
+- {skip_reason}
+
+**What this means:**
+- This application type is now excluded from donation metadata tracking
+- For GNOME/KDE apps: These projects have their own established donation infrastructure
+- For commercial apps: Closed-source commercial applications are not expected to have open donation links
+
+**Focusing on Individual Maintainers:**
+The flatpak-tracker now focuses on checking donation metadata for individual open-source application maintainers who can benefit from having donation links.
+
+If this was closed in error, please reopen the issue or contact the maintainers.
+
+---
+*This issue was automatically closed by the flatpak-tracker donation metadata checker.*
+""".strip()
+                    
+                    try:
+                        issue.create_comment(close_comment)
+                        issue.edit(state='closed')
+                        logger.info(f"Closed filtered issue #{issue.number} for {flatpak_id}: {skip_reason}")
+                        closed_count += 1
+                    except Exception as e:
+                        logger.error(f"Failed to close issue #{issue.number} for {flatpak_id}: {e}")
+            
+            if closed_count > 0:
+                logger.info(f"Closed {closed_count} issue(s) for filtered apps")
+            else:
+                logger.info("No issues to close for filtered apps")
+                
+        except Exception as e:
+            logger.error(f"Error while closing filtered issues: {e}")
 
 
 def load_flatpaks_from_json(file_path: str) -> Dict[str, any]:
@@ -319,11 +470,27 @@ def main():
         print("\n" + "="*60)
         print("Creating GitHub issues...")
         print("="*60)
+        
+        # Limit to 25 issues per run to avoid overwhelming the tracker
+        MAX_ISSUES_PER_RUN = 25
+        issues_to_create = missing_or_unreachable[:MAX_ISSUES_PER_RUN]
+        
+        if len(missing_or_unreachable) > MAX_ISSUES_PER_RUN:
+            print(f"Note: Limiting to {MAX_ISSUES_PER_RUN} issues per run")
+            print(f"      {len(missing_or_unreachable) - MAX_ISSUES_PER_RUN} issues will be created in subsequent runs")
+        
         created_count = 0
-        for donation_info in missing_or_unreachable:
+        for donation_info in issues_to_create:
             if checker.create_issue_for_missing_donation(donation_info):
                 created_count += 1
         print(f"\nCreated {created_count} new issues")
+    
+    # Close issues for filtered apps (GNOME/KDE or commercial)
+    if args.create_issues:
+        print("\n" + "="*60)
+        print("Checking for issues to close (filtered apps)...")
+        print("="*60)
+        checker.close_filtered_issues(flatpaks)
     
     return 0
 
