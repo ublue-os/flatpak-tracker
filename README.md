@@ -1,12 +1,16 @@
 # Flatpak Tracker
 
-Tracks out of date runtimes in Flatpaks shipped by Universal Blue. 
+Tracks out of date runtimes and missing donation metadata in Flatpaks shipped by Universal Blue. 
 
 **HELP WANTED!** This is a good way to help FlatHub!
 
 ## Purpose
 
-This repository tracks flatpak packages from multiple ublue-os sources and identifies which ones are using outdated flatpak runtimes. When outdated runtimes are detected, GitHub issues are automatically created with instructions on how to update them.
+This repository tracks flatpak packages from multiple ublue-os sources and identifies:
+- Packages using outdated flatpak runtimes
+- Packages missing or with unreachable donation links
+
+When issues are detected, GitHub issues are automatically created with instructions on how to fix them.
 
 This helps keep the ISOs small and can be an effective onramp for people who want to get involved helping FlatHub by updating apps that we ship and recommend to all Aurora, Bazzite, and Bluefin images.
 
@@ -21,23 +25,30 @@ In this case you can follow those instructions, test the application, and then g
 
 ## Architecture
 
-The tool uses a two-step approach for better reliability and debugging:
+The tool consists of three main components:
 
-### Step 1: Runtime Detection (`check_flatpak_runtimes.py`)
+### 1. Runtime Detection (`check_flatpak_runtimes.py`)
 - Fetches flatpak lists from multiple ublue-os sources
 - Queries Flathub API for runtime information
 - Compares current vs latest runtime versions
 - Outputs structured JSON data with outdated packages
 
-### Step 2: Issue Generation (`issue_generator.py`)
+### 2. Issue Generation (`issue_generator.py`)
 - Reads the JSON output from step 1
 - Creates GitHub issues for outdated packages
 - Manages existing issues (prevents duplicates, closes resolved)
 - Provides detailed update instructions
 
+### 3. Donation Metadata Checker (`check_donation_metadata.py`)
+- Fetches flatpak metadata from Flathub API
+- Checks for donation URL presence
+- Verifies donation URL reachability
+- Creates GitHub issues for missing or unreachable donation links
+
 ## How It Works
 
-1. **Automated Monitoring**: A GitHub Action runs daily to check for runtime updates
+### Runtime Update Checker
+1. **Automated Monitoring**: A GitHub Action runs weekly on Mondays to check for runtime updates
 2. **Multi-Source Analysis**: The script fetches flatpak lists from:
    - [ublue-os/bluefin system-flatpaks.list](https://github.com/ublue-os/bluefin/blob/main/flatpaks/system-flatpaks.list)
    - [ublue-os/aurora system-flatpaks.list](https://github.com/ublue-os/aurora/blob/main/flatpaks/system-flatpaks.list)  
@@ -49,6 +60,17 @@ The tool uses a two-step approach for better reliability and debugging:
    - Latest available runtime version
    - Step-by-step update instructions for Flathub maintainers
    - Links to official documentation
+
+### Donation Metadata Checker
+1. **Automated Monitoring**: A GitHub Action runs weekly on Mondays to check for donation metadata
+2. **Metadata Analysis**: For each tracked flatpak:
+   - Fetches metadata from Flathub API
+   - Checks for `urls.donation` field
+   - Verifies donation URL is reachable (if present)
+3. **Issue Creation**: For packages with missing or unreachable donation links:
+   - Creates labeled issues with `donation-metadata` tag
+   - Provides instructions on how to add or fix donation links
+   - Includes verification steps for maintainers
 
 ## Runtime Version Detection
 
@@ -72,15 +94,17 @@ known_latest_versions = {
 
 ## Manual Execution
 
-You can manually trigger the runtime check by:
+You can manually trigger the checks by:
 
 1. Going to the [Actions tab](../../actions)
-2. Selecting the "Check Flatpak Runtime Updates" workflow
+2. Selecting either workflow:
+   - "Check Flatpak Runtime Updates" 
+   - "Check Donation Metadata"
 3. Clicking "Run workflow"
 
 ### Local Testing
 
-To test the detection script locally:
+To test the runtime detection script locally:
 ```bash
 # Install dependencies
 pip install -r requirements.txt
@@ -95,6 +119,23 @@ python create_mock_data.py --output mock_outdated.json
 export GITHUB_TOKEN="your_token"
 export GITHUB_REPOSITORY="owner/repo"
 python issue_generator.py mock_outdated.json
+```
+
+To test the donation metadata checker locally:
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Generate flatpak list first
+python check_flatpak_runtimes.py --output flatpak_list.json
+
+# Check donation metadata (dry run, no issues created)
+python check_donation_metadata.py --input flatpak_list.json
+
+# Create issues for missing/unreachable donation links (requires GitHub credentials)
+export GITHUB_TOKEN="your_token"
+export GITHUB_REPOSITORY="owner/repo"
+python check_donation_metadata.py --input flatpak_list.json --create-issues
 ```
 
 ## Workflow Steps
@@ -120,8 +161,9 @@ If the detection step fails due to network issues, the workflow will still compl
 
 ## Issues
 
-Each issue created by this bot will be tagged with:
-- `runtime-update`: Indicates this is a runtime update issue
+Issues created by this bot are tagged with:
+- `runtime-update`: Runtime update issues
+- `donation-metadata`: Missing or unreachable donation link issues
 - `automated`: Shows this was created automatically
 
 ## Issue Template
@@ -149,14 +191,16 @@ This speeds up development by avoiding the need to install dependencies each tim
 .
 ├── .github/
 │   └── workflows/
-│       └── check-flatpak-runtimes.yml    # GitHub Actions workflow
-├── check_flatpak_runtimes.py            # Main detection script
-├── issue_generator.py                   # GitHub issue creation module
-├── create_mock_data.py                  # Test data generator for development
-├── requirements.txt                     # Python dependencies
-├── README.md                           # This documentation
-├── LICENSE                             # Apache 2.0 license
-└── .gitignore                          # Python/IDE/OS ignores
+│       ├── check-flatpak-runtimes.yml      # Runtime update checker workflow
+│       └── check-donation-metadata.yml     # Donation metadata checker workflow
+├── check_flatpak_runtimes.py              # Runtime detection script
+├── check_donation_metadata.py             # Donation metadata checker script
+├── issue_generator.py                     # GitHub issue creation for runtime updates
+├── create_mock_data.py                    # Test data generator for development
+├── requirements.txt                       # Python dependencies
+├── README.md                             # This documentation
+├── LICENSE                               # Apache 2.0 license
+└── .gitignore                            # Python/IDE/OS ignores
 ```
 
 ## Contributing
