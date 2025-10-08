@@ -305,12 +305,19 @@ class FlatpakRuntimeChecker:
         # Convert all tracked flatpaks to a list for easier processing
         all_tracked_list = list(all_tracked_flatpaks.keys())
         
+        # Also include source information for all tracked packages
+        all_tracked_with_sources = {
+            flatpak_id: {"sources": flatpak_info.sources}
+            for flatpak_id, flatpak_info in all_tracked_flatpaks.items()
+        }
+        
         output_data = {
             "timestamp": __import__('datetime').datetime.now().isoformat(),
             "total_checked": getattr(self, '_total_checked', 0),
             "outdated_count": len(outdated_packages),
             "outdated_packages": outdated_packages,
-            "all_tracked_packages": all_tracked_list
+            "all_tracked_packages": all_tracked_list,
+            "all_tracked_packages_with_sources": all_tracked_with_sources
         }
         
         try:
