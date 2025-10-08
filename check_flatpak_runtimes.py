@@ -234,8 +234,8 @@ class FlatpakRuntimeChecker:
         # - Check Freedesktop SDK releases: https://gitlab.com/freedesktop-sdk/freedesktop-sdk
         # - Check KDE release schedule: https://community.kde.org/Schedules
         known_latest_versions = {
-            'org.gnome.Platform': '48',  # GNOME 48 is current stable as of 2024
-            'org.freedesktop.Platform': '24.08',  # Freedesktop 24.08 is current
+            'org.gnome.Platform': '49',  # GNOME 49 is current stable as of Oct 2025
+            'org.freedesktop.Platform': '25.08',  # Freedesktop 25.08 is current
             'org.kde.Platform': '6.9',  # KDE 6.9 is current
         }
         
