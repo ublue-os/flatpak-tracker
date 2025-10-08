@@ -56,7 +56,17 @@ def create_mock_data():
             "app/org.gimp.GIMP",         # tracked but not outdated
             "app/org.libreoffice.LibreOffice",  # tracked but not outdated
             "app/com.spotify.Client"     # tracked but not outdated
-        ]
+        ],
+        "all_tracked_packages_with_sources": {
+            "app/org.gnome.Calculator": {"sources": ["bluefin", "aurora"]},
+            "app/org.mozilla.firefox": {"sources": ["bluefin"]},
+            "app/org.kde.krita": {"sources": ["bazzite-gnome", "bazzite-kde"]},
+            "app/com.example.BazaarApp": {"sources": ["bluefin-bazaar", "aurora-bazaar"]},
+            "app/org.gnome.TextEditor": {"sources": ["bluefin"]},
+            "app/org.gimp.GIMP": {"sources": ["aurora"]},
+            "app/org.libreoffice.LibreOffice": {"sources": ["bazzite-gnome"]},
+            "app/com.spotify.Client": {"sources": ["bluefin", "bazzite-kde"]}
+        }
     }
     
     return mock_data
