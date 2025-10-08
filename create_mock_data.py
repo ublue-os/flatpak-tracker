@@ -65,7 +65,7 @@ def create_mock_data():
             "app/org.gnome.TextEditor": {"sources": ["bluefin"]},
             "app/org.gimp.GIMP": {"sources": ["aurora"]},
             "app/org.libreoffice.LibreOffice": {"sources": ["bazzite-gnome"]},
-            "app/com.spotify.Client": {"sources": ["bluefin", "bazzite-kde"]}
+            "app/com.spotify.Client": {"sources": ["bluefin", "bazzite-gnome"]}
         }
     }
     

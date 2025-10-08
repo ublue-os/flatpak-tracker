@@ -119,12 +119,7 @@ class DonationMetadataChecker:
     def normalize_source_for_label(self, source: str) -> str:
         """Normalize source name to a valid GitHub label format.
         
-        Examples:
-            'bluefin' -> 'bluefin'
-            'bluefin-bazaar' -> 'bluefin'
-            'bazzite-gnome' -> 'bazzite'
-            'bazzite-kde' -> 'bazzite'
-            'aurora' -> 'aurora'
+        Extracts the main project name (e.g., 'bazzite-gnome' -> 'bazzite').
         """
         # Extract the main project name (first part before hyphen)
         base_name = source.split('-')[0]
