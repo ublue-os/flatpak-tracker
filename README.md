@@ -2,7 +2,7 @@
 
 Tracks out of date runtimes and missing donation metadata in Flatpaks shipped by Universal Blue. 
 
-**HELP WANTED!** This is a good way to help FlatHub!
+**HELP WANTED!** This is a good way to help FlatHub! Your path to FlatHub contribution begins here!
 
 ## Purpose
 
