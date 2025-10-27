@@ -116,6 +116,15 @@ class DonationMetadataChecker:
         
         return False
     
+    def normalize_source_for_label(self, source: str) -> str:
+        """Normalize source name to a valid GitHub label format.
+        
+        Extracts the main project name (e.g., 'bazzite-gnome' -> 'bazzite').
+        """
+        # Extract the main project name (first part before hyphen)
+        base_name = source.split('-')[0]
+        return base_name
+    
     def should_skip_app(self, flatpak_id: str, flatpak_info: Dict) -> Tuple[bool, Optional[str]]:
         """Determine if an app should be skipped for donation checking.
         
@@ -145,7 +154,7 @@ class DonationMetadataChecker:
     
     def check_donation_metadata(self, flatpaks: Dict[str, any]) -> List[DonationInfo]:
         """Check donation metadata for all flatpaks."""
-        missing_or_unreachable = []
+        missing_donation = []
         
         logger.info(f"Checking donation metadata for {len(flatpaks)} flatpaks...")
         
@@ -176,31 +185,16 @@ class DonationMetadataChecker:
                     url_reachable=None,
                     error_message="No donation URL found in metadata"
                 )
-                missing_or_unreachable.append(donation_info)
+                missing_donation.append(donation_info)
                 logger.info(f"  ❌ No donation URL for {flatpak_id}")
             else:
-                # Check if donation URL is reachable
-                is_reachable, error_msg = self.check_url_reachable(donation_url)
-                
-                if not is_reachable:
-                    # Donation URL exists but is unreachable
-                    donation_info = DonationInfo(
-                        flatpak_id=flatpak_id,
-                        sources=flatpak_info_obj.sources,
-                        donation_url=donation_url,
-                        url_reachable=False,
-                        error_message=error_msg
-                    )
-                    missing_or_unreachable.append(donation_info)
-                    logger.info(f"  ⚠️  Unreachable donation URL for {flatpak_id}: {donation_url} ({error_msg})")
-                else:
-                    logger.info(f"  ✅ Donation URL OK for {flatpak_id}: {donation_url}")
+                logger.info(f"  ✅ Donation URL found for {flatpak_id}: {donation_url}")
         
-        logger.info(f"Found {len(missing_or_unreachable)} packages with missing or unreachable donation URLs")
-        return missing_or_unreachable
+        logger.info(f"Found {len(missing_donation)} packages with missing donation URLs")
+        return missing_donation
     
     def create_issue_for_missing_donation(self, donation_info: DonationInfo):
-        """Create a GitHub issue for a package with missing or unreachable donation link."""
+        """Create a GitHub issue for a package with missing donation link."""
         if not self.repo:
             logger.error("GitHub repository not initialized, cannot create issues")
             return False
@@ -212,10 +206,9 @@ class DonationMetadataChecker:
         
         app_id = donation_info.flatpak_id.replace('app/', '')
         
-        if donation_info.donation_url is None:
-            # Missing donation URL
-            title = f"Donation Link missing for {app_id}"
-            body = f"""## Missing Donation Link
+        # Only handle missing donation URL (no unreachable URL logic)
+        title = f"Donation Link missing for {app_id}"
+        body = f"""## Missing Donation Link
 
 **Package:** `{donation_info.flatpak_id}`
 **Found in sources:** {', '.join(donation_info.sources)}
@@ -246,46 +239,22 @@ Look for the `urls.donation` field in the JSON response.
 ---
 *This issue was automatically created by the flatpak-tracker donation metadata checker.*
 """
-        else:
-            # Unreachable donation URL
-            title = f"Donation Link unreachable for {app_id}"
-            body = f"""## Unreachable Donation Link
-
-**Package:** `{donation_info.flatpak_id}`
-**Donation URL:** {donation_info.donation_url}
-**Error:** {donation_info.error_message}
-**Found in sources:** {', '.join(donation_info.sources)}
-
-This flatpak package has a donation link in its metadata, but the URL appears to be unreachable.
-
-### What This Means
-
-The donation URL in the AppStream metadata returned an error when accessed. This could be due to:
-- The URL being incorrect or outdated
-- The server being temporarily down
-- Network restrictions or redirects
-
-### How to Fix
-
-For app maintainers on Flathub:
-
-1. Verify the donation URL is correct
-2. Update the `<url type="donation">` entry in your AppStream metadata file
-3. Submit a pull request to your app's Flathub repository
-
-### Verification
-
-You can verify the metadata at: https://flathub.org/api/v2/appstream/{app_id}?locale=en
-
-Look for the `urls.donation` field in the JSON response.
-
----
-*This issue was automatically created by the flatpak-tracker donation metadata checker.*
-"""
+        
+        # Create labels list with donation-metadata and source-specific labels
+        labels = ['donation-metadata']
+        
+        # Add source-specific labels
+        unique_sources = set()
+        for source in donation_info.sources:
+            normalized_source = self.normalize_source_for_label(source)
+            unique_sources.add(normalized_source)
+        
+        # Add all unique source labels
+        labels.extend(sorted(unique_sources))
         
         try:
-            issue = self.repo.create_issue(title=title, body=body.strip(), labels=['donation-metadata'])
-            logger.info(f"Created issue #{issue.number}: {title}")
+            issue = self.repo.create_issue(title=title, body=body.strip(), labels=labels)
+            logger.info(f"Created issue #{issue.number} with labels {labels}: {title}")
             return True
         except Exception as e:
             logger.error(f"Failed to create issue for {donation_info.flatpak_id}: {e}")
@@ -398,13 +367,26 @@ def load_flatpaks_from_json(file_path: str) -> Dict[str, any]:
         
         # Convert to a simple dict structure
         flatpaks = {}
-        for flatpak_id in data.get('all_tracked_packages', []):
-            # Create a simple object with sources
-            class SimpleInfo:
-                def __init__(self):
-                    self.sources = ['tracked']
-            
-            flatpaks[flatpak_id] = SimpleInfo()
+        
+        # Try to load from all_tracked_packages_with_sources first (newer format)
+        all_tracked_with_sources = data.get('all_tracked_packages_with_sources', {})
+        
+        if all_tracked_with_sources:
+            # New format with source information
+            for flatpak_id, info in all_tracked_with_sources.items():
+                class SimpleInfo:
+                    def __init__(self, sources):
+                        self.sources = sources
+                
+                flatpaks[flatpak_id] = SimpleInfo(info.get('sources', ['tracked']))
+        else:
+            # Fallback to old format without source information
+            for flatpak_id in data.get('all_tracked_packages', []):
+                class SimpleInfo:
+                    def __init__(self):
+                        self.sources = ['tracked']
+                
+                flatpaks[flatpak_id] = SimpleInfo()
         
         logger.info(f"Loaded {len(flatpaks)} flatpaks from {file_path}")
         return flatpaks
@@ -443,41 +425,33 @@ def main():
         checker = DonationMetadataChecker()
     
     # Check donation metadata
-    missing_or_unreachable = checker.check_donation_metadata(flatpaks)
+    missing_donation = checker.check_donation_metadata(flatpaks)
     
     # Print summary
     print("\n" + "="*60)
-    print(f"SUMMARY: {len(missing_or_unreachable)} packages with issues")
+    print(f"SUMMARY: {len(missing_donation)} packages with missing donation URLs")
     print("="*60)
     
-    missing_count = sum(1 for d in missing_or_unreachable if d.donation_url is None)
-    unreachable_count = len(missing_or_unreachable) - missing_count
-    
-    print(f"Missing donation URL: {missing_count}")
-    print(f"Unreachable donation URL: {unreachable_count}")
-    
-    if missing_or_unreachable:
-        print("\nPackages with issues:")
-        for donation_info in missing_or_unreachable:
+    if missing_donation:
+        print("\nPackages with missing donation URLs:")
+        for donation_info in missing_donation:
             app_id = donation_info.flatpak_id.replace('app/', '')
-            if donation_info.donation_url is None:
-                print(f"  - {app_id}: No donation URL")
-            else:
-                print(f"  - {app_id}: Unreachable ({donation_info.error_message})")
+            sources_str = ', '.join(donation_info.sources)
+            print(f"  - {app_id} (sources: {sources_str})")
     
     # Create issues if requested
-    if args.create_issues and missing_or_unreachable:
+    if args.create_issues and missing_donation:
         print("\n" + "="*60)
         print("Creating GitHub issues...")
         print("="*60)
         
         # Limit to 25 issues per run to avoid overwhelming the tracker
         MAX_ISSUES_PER_RUN = 25
-        issues_to_create = missing_or_unreachable[:MAX_ISSUES_PER_RUN]
+        issues_to_create = missing_donation[:MAX_ISSUES_PER_RUN]
         
-        if len(missing_or_unreachable) > MAX_ISSUES_PER_RUN:
+        if len(missing_donation) > MAX_ISSUES_PER_RUN:
             print(f"Note: Limiting to {MAX_ISSUES_PER_RUN} issues per run")
-            print(f"      {len(missing_or_unreachable) - MAX_ISSUES_PER_RUN} issues will be created in subsequent runs")
+            print(f"      {len(missing_donation) - MAX_ISSUES_PER_RUN} issues will be created in subsequent runs")
         
         created_count = 0
         for donation_info in issues_to_create:
