@@ -58,11 +58,11 @@ class FlatpakRuntimeChecker:
             },
             # Bazaar config sources
             'bluefin-bazaar': {
-                'url': 'https://raw.githubusercontent.com/ublue-os/bluefin/main/system_files/shared/usr/share/ublue-os/bazaar/config.yaml',
+                'url': 'https://raw.githubusercontent.com/ublue-os/bluefin/main/system_files/shared/etc/bazaar/config.yaml',
                 'format': 'bazaar_yaml'  # YAML format with appids in sections
             },
             'aurora-bazaar': {
-                'url': 'https://raw.githubusercontent.com/ublue-os/aurora/main/system_files/shared/usr/share/ublue-os/bazaar/config.yaml',
+                'url': 'https://raw.githubusercontent.com/ublue-os/aurora/main/system_files/shared/etc/bazaar/config.yaml',
                 'format': 'bazaar_yaml'  # YAML format with appids in sections
             },
             'bazzite-bazaar': {
