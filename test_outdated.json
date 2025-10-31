@@ -1,0 +1,23 @@
+{
+  "timestamp": "2025-10-31T15:55:18.125865",
+  "total_checked": 1,
+  "outdated_count": 1,
+  "outdated_packages": [
+    {
+      "flatpak_id": "app/org.mozilla.firefox",
+      "sources": [
+        "bluefin",
+        "aurora",
+        "bazzite-gnome",
+        "bazzite-kde"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    }
+  ],
+  "all_tracked_packages": [
+    "app/org.mozilla.firefox"
+  ]
+}

@@ -1,0 +1,956 @@
+{
+  "timestamp": "2025-10-31T15:55:18.125865",
+  "total_checked": 162,
+  "outdated_count": 77,
+  "outdated_packages": [
+    {
+      "flatpak_id": "app/com.github.rafostar.Clapper",
+      "sources": [
+        "bluefin"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/47",
+      "latest_runtime": "org.gnome.Platform/x86_64/49",
+      "current_version": "47",
+      "latest_version": "49"
+    },
+    {
+      "flatpak_id": "app/com.ranfdev.DistroShelf",
+      "sources": [
+        "bluefin",
+        "aurora",
+        "bazzite-gnome",
+        "bazzite-kde"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/48",
+      "latest_runtime": "org.gnome.Platform/x86_64/49",
+      "current_version": "48",
+      "latest_version": "49"
+    },
+    {
+      "flatpak_id": "app/io.github.flattool.Ignition",
+      "sources": [
+        "bluefin",
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/48",
+      "latest_runtime": "org.gnome.Platform/x86_64/49",
+      "current_version": "48",
+      "latest_version": "49"
+    },
+    {
+      "flatpak_id": "app/io.github.flattool.Warehouse",
+      "sources": [
+        "bluefin",
+        "aurora",
+        "bazzite-gnome",
+        "bazzite-kde"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/48",
+      "latest_runtime": "org.gnome.Platform/x86_64/49",
+      "current_version": "48",
+      "latest_version": "49"
+    },
+    {
+      "flatpak_id": "app/io.missioncenter.MissionCenter",
+      "sources": [
+        "bluefin",
+        "aurora",
+        "bazzite-gnome"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/48",
+      "latest_runtime": "org.gnome.Platform/x86_64/49",
+      "current_version": "48",
+      "latest_version": "49"
+    },
+    {
+      "flatpak_id": "app/org.mozilla.Thunderbird",
+      "sources": [
+        "bluefin",
+        "aurora",
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/org.mozilla.firefox",
+      "sources": [
+        "bluefin",
+        "aurora",
+        "bazzite-gnome",
+        "bazzite-kde"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/org.gtk.Gtk3theme.Breeze",
+      "sources": [
+        "aurora"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/org.gustavoperedo.FontDownloader",
+      "sources": [
+        "aurora"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/47",
+      "latest_runtime": "org.gnome.Platform/x86_64/49",
+      "current_version": "47",
+      "latest_version": "49"
+    },
+    {
+      "flatpak_id": "app/com.github.Matoking.protontricks",
+      "sources": [
+        "bazzite-gnome",
+        "bazzite-kde"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/org.altlinux.Tuner",
+      "sources": [
+        "bazzite-gnome"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/48",
+      "latest_runtime": "org.gnome.Platform/x86_64/49",
+      "current_version": "48",
+      "latest_version": "49"
+    },
+    {
+      "flatpak_id": "app/io.github.Faugus.faugus-launcher",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/io.mrarm.mcpelauncher",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.kde.Platform/x86_64/6.7",
+      "latest_runtime": "org.kde.Platform/x86_64/6.9",
+      "current_version": "6.7",
+      "latest_version": "6.9"
+    },
+    {
+      "flatpak_id": "app/at.vintagestory.VintageStory",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/org.zdoom.Raze",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/23.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "23.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/net.retrodeck.retrodeck",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.kde.Platform/x86_64/6.7",
+      "latest_runtime": "org.kde.Platform/x86_64/6.9",
+      "current_version": "6.7",
+      "latest_version": "6.9"
+    },
+    {
+      "flatpak_id": "app/org.libretro.RetroArch",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.kde.Platform/x86_64/6.8",
+      "latest_runtime": "org.kde.Platform/x86_64/6.9",
+      "current_version": "6.8",
+      "latest_version": "6.9"
+    },
+    {
+      "flatpak_id": "app/page.kramo.Cartridges",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/48",
+      "latest_runtime": "org.gnome.Platform/x86_64/49",
+      "current_version": "48",
+      "latest_version": "49"
+    },
+    {
+      "flatpak_id": "app/com.github._0negal.Viper",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/23.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "23.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/info.cemu.Cemu",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/io.github.shiiion.primehack",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.kde.Platform/x86_64/6.8",
+      "latest_runtime": "org.kde.Platform/x86_64/6.9",
+      "current_version": "6.8",
+      "latest_version": "6.9"
+    },
+    {
+      "flatpak_id": "app/com.snes9x.Snes9x",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/io.mgba.mGBA",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.kde.Platform/x86_64/5.15-24.08",
+      "latest_runtime": "org.kde.Platform/x86_64/6.9",
+      "current_version": "5.15-24.08",
+      "latest_version": "6.9"
+    },
+    {
+      "flatpak_id": "app/org.ppsspp.PPSSPP",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/net.pcsx2.PCSX2",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.kde.Platform/x86_64/6.8",
+      "latest_runtime": "org.kde.Platform/x86_64/6.9",
+      "current_version": "6.8",
+      "latest_version": "6.9"
+    },
+    {
+      "flatpak_id": "app/io.github.stella_emu.Stella",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/23.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "23.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/rs.ruffle.Ruffle",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/net.hhoney.rota",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/io.github.doukutsu_rs.doukutsu-rs",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/com.github.k4zmu2a.spacecadetpinball",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/sh.ppy.osu",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/com.etlegacy.ETLegacy",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/com.realm667.Wolfenstein_Blade_of_Agony",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/23.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "23.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/net.stabyourself.nottetris2",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/23.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "23.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/org.srb2.SRB2",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/org.srb2.SRB2Kart",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/23.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "23.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/org.supertuxproject.SuperTux",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/net.supertuxkart.SuperTuxKart",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/com.obsproject.Studio",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.kde.Platform/x86_64/6.8",
+      "latest_runtime": "org.kde.Platform/x86_64/6.9",
+      "current_version": "6.8",
+      "latest_version": "6.9"
+    },
+    {
+      "flatpak_id": "app/com.feaneron.Boatswain",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/48",
+      "latest_runtime": "org.gnome.Platform/x86_64/49",
+      "current_version": "48",
+      "latest_version": "49"
+    },
+    {
+      "flatpak_id": "app/com.moonlight_stream.Moonlight",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.kde.Platform/x86_64/6.8",
+      "latest_runtime": "org.kde.Platform/x86_64/6.9",
+      "current_version": "6.8",
+      "latest_version": "6.9"
+    },
+    {
+      "flatpak_id": "app/com.valvesoftware.SteamLink",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/23.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "23.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/im.pidgin.Pidgin",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/48",
+      "latest_runtime": "org.gnome.Platform/x86_64/49",
+      "current_version": "48",
+      "latest_version": "49"
+    },
+    {
+      "flatpak_id": "app/info.mumble.Mumble",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.kde.Platform/x86_64/5.15-25.08",
+      "latest_runtime": "org.kde.Platform/x86_64/6.9",
+      "current_version": "5.15-25.08",
+      "latest_version": "6.9"
+    },
+    {
+      "flatpak_id": "app/org.squidowl.halloy",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/io.bassi.Amberol",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/48",
+      "latest_runtime": "org.gnome.Platform/x86_64/49",
+      "current_version": "48",
+      "latest_version": "49"
+    },
+    {
+      "flatpak_id": "app/com.github.neithern.g4music",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/48",
+      "latest_runtime": "org.gnome.Platform/x86_64/49",
+      "current_version": "48",
+      "latest_version": "49"
+    },
+    {
+      "flatpak_id": "app/com.mastermindzh.tidal-hifi",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/org.videolan.VLC",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.kde.Platform/x86_64/5.15-24.08",
+      "latest_runtime": "org.kde.Platform/x86_64/6.9",
+      "current_version": "5.15-24.08",
+      "latest_version": "6.9"
+    },
+    {
+      "flatpak_id": "app/com.github.iwalton3.jellyfin-media-player",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.kde.Platform/x86_64/5.15-24.08",
+      "latest_runtime": "org.kde.Platform/x86_64/6.9",
+      "current_version": "5.15-24.08",
+      "latest_version": "6.9"
+    },
+    {
+      "flatpak_id": "app/tv.plex.PlexDesktop",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/23.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "23.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/com.plexamp.Plexamp",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/rocks.shy.VacuumTube",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/camp.nook.nookdesktop",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/org.onlyoffice.desktopeditors",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/org.inkscape.Inkscape",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/48",
+      "latest_runtime": "org.gnome.Platform/x86_64/49",
+      "current_version": "48",
+      "latest_version": "49"
+    },
+    {
+      "flatpak_id": "app/org.blender.Blender",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/io.github.nokse22.Exhibit",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/48",
+      "latest_runtime": "org.gnome.Platform/x86_64/49",
+      "current_version": "48",
+      "latest_version": "49"
+    },
+    {
+      "flatpak_id": "app/io.github.jliljebl.Flowblade",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/48",
+      "latest_runtime": "org.gnome.Platform/x86_64/49",
+      "current_version": "48",
+      "latest_version": "49"
+    },
+    {
+      "flatpak_id": "app/com.slack.Slack",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/io.github.ilya_zlobintsev.LACT",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/48",
+      "latest_runtime": "org.gnome.Platform/x86_64/49",
+      "current_version": "48",
+      "latest_version": "49"
+    },
+    {
+      "flatpak_id": "app/io.github.limo_app.limo",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.kde.Platform/x86_64/5.15-24.08",
+      "latest_runtime": "org.kde.Platform/x86_64/6.9",
+      "current_version": "5.15-24.08",
+      "latest_version": "6.9"
+    },
+    {
+      "flatpak_id": "app/io.github.radiolamp.mangojuice",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/48",
+      "latest_runtime": "org.gnome.Platform/x86_64/49",
+      "current_version": "48",
+      "latest_version": "49"
+    },
+    {
+      "flatpak_id": "app/io.github.trigg.discover_overlay",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/47",
+      "latest_runtime": "org.gnome.Platform/x86_64/49",
+      "current_version": "47",
+      "latest_version": "49"
+    },
+    {
+      "flatpak_id": "app/com.github.wwmm.easyeffects",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/48",
+      "latest_runtime": "org.gnome.Platform/x86_64/49",
+      "current_version": "48",
+      "latest_version": "49"
+    },
+    {
+      "flatpak_id": "app/me.timschneeberger.jdsp4linux",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.kde.Platform/x86_64/6.8",
+      "latest_runtime": "org.kde.Platform/x86_64/6.9",
+      "current_version": "6.8",
+      "latest_version": "6.9"
+    },
+    {
+      "flatpak_id": "app/com.github.Alcaro.Flips",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/46",
+      "latest_runtime": "org.gnome.Platform/x86_64/49",
+      "current_version": "46",
+      "latest_version": "49"
+    },
+    {
+      "flatpak_id": "app/io.github.thetumultuousunicornofdarkness.cpu-x",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/app.drey.Warp",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/48",
+      "latest_runtime": "org.gnome.Platform/x86_64/49",
+      "current_version": "48",
+      "latest_version": "49"
+    },
+    {
+      "flatpak_id": "app/com.rustdesk.RustDesk",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/it.mijorus.gearlever",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/48",
+      "latest_runtime": "org.gnome.Platform/x86_64/49",
+      "current_version": "48",
+      "latest_version": "49"
+    },
+    {
+      "flatpak_id": "app/io.github.fastrizwaan.WineZGUI",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.freedesktop.Platform/x86_64/24.08",
+      "latest_runtime": "org.freedesktop.Platform/x86_64/25.08",
+      "current_version": "24.08",
+      "latest_version": "25.08"
+    },
+    {
+      "flatpak_id": "app/io.github.berarma.Oversteer",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/48",
+      "latest_runtime": "org.gnome.Platform/x86_64/49",
+      "current_version": "48",
+      "latest_version": "49"
+    },
+    {
+      "flatpak_id": "app/io.github.lawstorant.boxflat",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/47",
+      "latest_runtime": "org.gnome.Platform/x86_64/49",
+      "current_version": "47",
+      "latest_version": "49"
+    },
+    {
+      "flatpak_id": "app/org.keepassxc.KeePassXC",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.kde.Platform/x86_64/5.15-24.08",
+      "latest_runtime": "org.kde.Platform/x86_64/6.9",
+      "current_version": "5.15-24.08",
+      "latest_version": "6.9"
+    },
+    {
+      "flatpak_id": "app/com.github.zocker_160.SyncThingy",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.kde.Platform/x86_64/5.15-24.08",
+      "latest_runtime": "org.kde.Platform/x86_64/6.9",
+      "current_version": "5.15-24.08",
+      "latest_version": "6.9"
+    },
+    {
+      "flatpak_id": "app/org.gnome.GHex",
+      "sources": [
+        "bazzite-bazaar"
+      ],
+      "current_runtime": "org.gnome.Platform/x86_64/48",
+      "latest_runtime": "org.gnome.Platform/x86_64/49",
+      "current_version": "48",
+      "latest_version": "49"
+    }
+  ],
+  "all_tracked_packages": [
+    "app/com.github.PintaProject.Pinta",
+    "app/com.github.rafostar.Clapper",
+    "app/com.github.tchx84.Flatseal",
+    "app/com.mattjakeman.ExtensionManager",
+    "app/com.ranfdev.DistroShelf",
+    "app/io.github.flattool.Ignition",
+    "app/io.github.flattool.Warehouse",
+    "app/io.github.kolunmi.Bazaar",
+    "app/io.gitlab.adhami3310.Impression",
+    "app/io.missioncenter.MissionCenter",
+    "app/org.gnome.Calculator",
+    "app/org.gnome.Calendar",
+    "app/org.gnome.Characters",
+    "app/org.gnome.Connections",
+    "app/org.gnome.Contacts",
+    "app/org.gnome.DejaDup",
+    "app/org.gnome.FileRoller",
+    "app/org.gnome.Firmware",
+    "app/org.gnome.Logs",
+    "app/org.gnome.Loupe",
+    "app/org.gnome.Maps",
+    "app/org.gnome.NautilusPreviewer",
+    "app/org.gnome.Papers",
+    "app/org.gnome.SimpleScan",
+    "app/org.gnome.TextEditor",
+    "app/org.gnome.Weather",
+    "app/org.gnome.baobab",
+    "app/org.gnome.clocks",
+    "app/org.gnome.font-viewer",
+    "app/org.mozilla.Thunderbird",
+    "app/org.mozilla.firefox",
+    "app/page.tesk.Refine",
+    "app/org.deskflow.deskflow",
+    "app/org.fedoraproject.MediaWriter",
+    "app/org.fkoehler.KTailctl",
+    "app/org.gtk.Gtk3theme.Breeze",
+    "app/org.gustavoperedo.FontDownloader",
+    "app/org.kde.gwenview",
+    "app/org.kde.haruna",
+    "app/org.kde.kcalc",
+    "app/org.kde.kclock",
+    "app/org.kde.kontact",
+    "app/org.kde.kweather",
+    "app/org.kde.okular",
+    "app/org.kde.skanpage",
+    "app/com.github.Matoking.protontricks",
+    "app/com.vysp3r.ProtonPlus",
+    "app/org.gnome.Showtime",
+    "app/org.altlinux.Tuner",
+    "app/org.kde.filelight",
+    "app/com.heroicgameslauncher.hgl",
+    "app/io.itch.itch",
+    "app/io.github.Faugus.faugus-launcher",
+    "app/org.prismlauncher.PrismLauncher",
+    "app/io.mrarm.mcpelauncher",
+    "app/at.vintagestory.VintageStory",
+    "app/org.vinegarhq.Sober",
+    "app/org.zdoom.GZDoom",
+    "app/org.zdoom.Raze",
+    "app/org.openmw.OpenMW",
+    "app/dev.goats.xivlauncher",
+    "app/net.retrodeck.retrodeck",
+    "app/org.libretro.RetroArch",
+    "app/page.kramo.Cartridges",
+    "app/com.github._0negal.Viper",
+    "app/info.cemu.Cemu",
+    "app/org.DolphinEmu.dolphin-emu",
+    "app/io.github.shiiion.primehack",
+    "app/net.kuribo64.melonDS",
+    "app/com.snes9x.Snes9x",
+    "app/io.mgba.mGBA",
+    "app/org.ppsspp.PPSSPP",
+    "app/org.duckstation.DuckStation",
+    "app/net.pcsx2.PCSX2",
+    "app/net.rpcs3.RPCS3",
+    "app/app.xemu.xemu",
+    "app/org.mamedev.MAME",
+    "app/io.github.stella_emu.Stella",
+    "app/org.scummvm.ScummVM",
+    "app/io.github.dosbox-staging",
+    "app/rs.ruffle.Ruffle",
+    "app/com.supermodel3.Supermodel",
+    "app/net.hhoney.rota",
+    "app/io.github.doukutsu_rs.doukutsu-rs",
+    "app/com.github.k4zmu2a.spacecadetpinball",
+    "app/sh.ppy.osu",
+    "app/com.pokemmo.PokeMMO",
+    "app/com.etlegacy.ETLegacy",
+    "app/com.realm667.Wolfenstein_Blade_of_Agony",
+    "app/net.stabyourself.nottetris2",
+    "app/org.srb2.SRB2",
+    "app/org.srb2.SRB2Kart",
+    "app/org.endlessaccess.threadbare",
+    "app/org.kartkrew.RingRacers",
+    "app/org.supertuxproject.SuperTux",
+    "app/net.supertuxkart.SuperTuxKart",
+    "app/com.obsproject.Studio",
+    "app/com.feaneron.Boatswain",
+    "app/com.moonlight_stream.Moonlight",
+    "app/com.valvesoftware.SteamLink",
+    "app/io.github.astralvixen.geforce-infinity",
+    "app/com.parsecgaming.parsec",
+    "app/com.discordapp.Discord",
+    "app/dev.vencord.Vesktop",
+    "app/im.pidgin.Pidgin",
+    "app/com.teamspeak.TeamSpeak",
+    "app/info.mumble.Mumble",
+    "app/im.riot.Riot",
+    "app/org.squidowl.halloy",
+    "app/org.gnome.Fractal",
+    "app/io.bassi.Amberol",
+    "app/com.github.neithern.g4music",
+    "app/org.atheme.audacious",
+    "app/com.spotify.Client",
+    "app/com.mastermindzh.tidal-hifi",
+    "app/org.videolan.VLC",
+    "app/com.github.iwalton3.jellyfin-media-player",
+    "app/tv.plex.PlexDesktop",
+    "app/com.plexamp.Plexamp",
+    "app/rocks.shy.VacuumTube",
+    "app/org.strawberrymusicplayer.strawberry",
+    "app/camp.nook.nookdesktop",
+    "app/org.libreoffice.LibreOffice",
+    "app/org.onlyoffice.desktopeditors",
+    "app/org.gimp.GIMP",
+    "app/org.kde.krita",
+    "app/org.inkscape.Inkscape",
+    "app/org.blender.Blender",
+    "app/io.github.nokse22.Exhibit",
+    "app/io.github.jliljebl.Flowblade",
+    "app/de.leopoldluley.Clapgrep",
+    "app/org.audacityteam.Audacity",
+    "app/org.ardour.Ardour",
+    "app/md.obsidian.Obsidian",
+    "app/org.standardnotes.standardnotes",
+    "app/com.slack.Slack",
+    "app/com.github.IsmaelMartinez.teams_for_linux",
+    "app/io.github.ilya_zlobintsev.LACT",
+    "app/io.github.limo_app.limo",
+    "app/io.github.radiolamp.mangojuice",
+    "app/io.github.rfrench3.scopebuddy-gui",
+    "app/io.github.trigg.discover_overlay",
+    "app/com.github.wwmm.easyeffects",
+    "app/me.timschneeberger.jdsp4linux",
+    "app/com.github.Alcaro.Flips",
+    "app/io.github.thetumultuousunicornofdarkness.cpu-x",
+    "app/io.github.arunsivaramanneo.GPUViewer",
+    "app/dev.deedles.Trayscale",
+    "app/app.drey.Warp",
+    "app/com.rustdesk.RustDesk",
+    "app/io.github.pwr_solaar.solaar",
+    "app/it.mijorus.gearlever",
+    "app/io.github.fastrizwaan.WineZGUI",
+    "app/io.github.berarma.Oversteer",
+    "app/io.github.lawstorant.boxflat",
+    "app/org.keepassxc.KeePassXC",
+    "app/com.bitwarden.desktop",
+    "app/org.qbittorrent.qBittorrent",
+    "app/com.github.zocker_160.SyncThingy",
+    "app/org.raspberrypi.rpi-imager",
+    "app/cc.arduino.IDE2",
+    "app/org.gnome.GHex"
+  ]
+}

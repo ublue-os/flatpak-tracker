@@ -9,6 +9,8 @@ import logging
 import os
 import sys
 import re
+import requests
+import time
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
 from github import Github
@@ -27,6 +29,8 @@ class OutdatedPackage:
     latest_runtime: str
     current_version: str
     latest_version: str
+    installs: int = 0
+    monthly_downloads: int = 0
 
 
 class IssueGenerator:
@@ -56,6 +60,7 @@ class IssueGenerator:
 **Package:** `{package.flatpak_id}`
 **Current Runtime:** `{package.current_runtime}`
 **Latest Available Runtime:** `{package.latest_runtime}`
+**Monthly Downloads:** `{package.monthly_downloads}`
 **Found in sources:** {sources_info}
 
 ### Look for an existing pull request!
@@ -128,7 +133,7 @@ If this is a false positive or the runtime is intentionally pinned to an older v
             logger.error(f"Error checking existing issues: {e}")
             return None
     
-    def create_or_update_issue(self, package: OutdatedPackage) -> bool:
+    def create_or_update_issue(self, package: OutdatedPackage, is_important: bool = False) -> bool:
         """Create a GitHub issue for an outdated package or update existing one."""
         issue_title = f"Update runtime for {package.flatpak_id}"
         
@@ -138,6 +143,10 @@ If this is a false positive or the runtime is intentionally pinned to an older v
         # Generate body content
         body = self.create_issue_body(package)
         
+        labels = []
+        if is_important:
+            labels.append("important")
+
         if existing_issue:
             # Update existing issue
             try:
@@ -175,6 +184,8 @@ The runtime update instructions remain the same.
 *This issue was automatically updated by the flatpak-updater bot.*
 """.strip()
                     existing_issue.create_comment(update_comment)
+                    if is_important:
+                        existing_issue.add_to_labels("important")
                     return True
                 else:
                     logger.info(f"Issue #{existing_issue.number} for {package.flatpak_id} is already up to date")
@@ -188,7 +199,8 @@ The runtime update instructions remain the same.
             try:
                 issue = self.repo.create_issue(
                     title=issue_title,
-                    body=body
+                    body=body,
+                    labels=labels
                 )
                 logger.info(f"Created new issue #{issue.number} for {package.flatpak_id}")
                 return True
@@ -292,6 +304,17 @@ def load_outdated_packages(file_path: str) -> Tuple[List[OutdatedPackage], List[
                 current_version=item['current_version'],
                 latest_version=item['latest_version']
             )
+            
+            # Fetch install count from Flathub
+            try:
+                response = requests.get(f"https://flathub.org/api/v2/stats/{package.flatpak_id}")
+                if response.status_code == 200:
+                    stats = response.json()
+                    package.monthly_downloads = stats.get('installs_last_month', 0)
+                time.sleep(1) # Add a delay to avoid overwhelming Flathub
+            except Exception as e:
+                logger.warning(f"Could not fetch monthly download count for {package.flatpak_id}: {e}")
+
             packages.append(package)
         
         # Get all tracked packages for cleanup logic
@@ -336,6 +359,9 @@ def main():
     logger.info(f"Found {len(packages)} outdated packages")
     logger.info(f"Tracking {len(all_tracked_packages)} total packages")
     
+    # Sort packages by install count
+    packages.sort(key=lambda p: p.installs, reverse=True)
+    
     # Initialize issue generator
     generator = IssueGenerator(github_token, repo_name)
     
@@ -345,8 +371,9 @@ def main():
     
     # Create or update issues for outdated packages
     created_or_updated_count = 0
-    for package in packages:
-        if generator.create_or_update_issue(package):
+    for i, package in enumerate(packages):
+        is_important = i < 10
+        if generator.create_or_update_issue(package, is_important):
             created_or_updated_count += 1
     
     logger.info(f"Created or updated {created_or_updated_count} issues for outdated packages")
