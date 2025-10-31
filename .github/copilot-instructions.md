@@ -96,3 +96,9 @@ Flatpak Runtime Updater is a Python-based GitHub Actions tool that monitors flat
 - Test API rate limiting considerations for large package lists
 - Ensure proper error handling for network failures
 - Update requirements.txt if adding new Python dependencies
+
+# Issue Labelling
+
+- Issues for applications that need to upgrade to org.gnome.Platform/x86_64/49 should be labelled as `gnome-49`
+- Issues for applications that need their freedesktop runtime updated to org.freedesktop.Platform/x86_64/25.08 should be labelled `freedesktop-25.08`
+- Issues for applications that need their KDE runtime updated to org.kde.Platform/x86_64/6.9 should be labelled `kde-6.9`
