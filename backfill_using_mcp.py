@@ -128,12 +128,18 @@ def generate_historical_changelog_sections(snapshots: List[HistoricalSnapshot]) 
         end_of_week = start_of_week + timedelta(days=6)
         week_range = f"{start_of_week.strftime('%B %d')} - {end_of_week.strftime('%B %d, %Y')}"
         
+        # Extract compliance rate calculation for readability
+        if len(new_snapshot.all_tracked_packages) > 0:
+            compliance_rate = ((len(new_snapshot.all_tracked_packages) - len(new_snapshot.outdated_packages)) / len(new_snapshot.all_tracked_packages) * 100)
+        else:
+            compliance_rate = 0
+
         section = f"""## Week of {week_range}
 
 **Run Date:** {run_date.strftime('%Y-%m-%d')}
 **Total Applications:** {len(new_snapshot.all_tracked_packages)}
 **Outdated:** {len(new_snapshot.outdated_packages)}
-**Compliance Rate:** {((len(new_snapshot.all_tracked_packages) - len(new_snapshot.outdated_packages)) / len(new_snapshot.all_tracked_packages) * 100) if len(new_snapshot.all_tracked_packages) > 0 else 0:.1f}%
+**Compliance Rate:** {compliance_rate:.1f}%
 
 """
         
