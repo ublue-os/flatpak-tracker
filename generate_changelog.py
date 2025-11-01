@@ -376,8 +376,9 @@ class ChangelogGenerator:
             try:
                 ts = datetime.fromisoformat(metadata['timestamp'].replace('Z', '+00:00'))
                 run_date = f"most recent scheduled run: {ts.strftime('%Y-%m-%d')}"
-            except:
-                pass
+            except (ValueError, TypeError):
+                # If timestamp is missing or malformed, fall back to default run_date string
+                logger.warning("Could not parse timestamp from metadata; using default run_date.")
         
         dashboard = f"""# 📊 Flatpak Runtime Tracker
 *Updated: {self.current_date.strftime('%B %d, %Y at %H:%M UTC')}*
