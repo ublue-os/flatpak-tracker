@@ -1,6 +1,15 @@
+# Setup
 title: Flatpak Runtime Tracker
-description: Tracking runtime updates for flatpaks shipped by Universal Blue
-theme: jekyll-theme-cayman
+tagline: 'Tracking runtime updates for Universal Blue'
+description: 'Tracking runtime updates for flatpak applications shipped by Universal Blue (Bluefin, Aurora, Bazzite)'
+url: https://ublue-os.github.io/flatpak-tracker
+baseurl: '/flatpak-tracker'
+permalink: pretty
+
+# About/contact
+author:
+  name: Universal Blue
+  url: https://github.com/ublue-os
 
 # Use CHANGELOG.md as the main page instead of README.md
 include:
