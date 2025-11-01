@@ -7,7 +7,6 @@ that have been downloaded via the GitHub MCP server.
 
 import json
 import logging
-import os
 import sys
 from datetime import datetime, timedelta
 from typing import List, Set, Tuple
