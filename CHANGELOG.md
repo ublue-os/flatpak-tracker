@@ -11,12 +11,6 @@
 | **⏳ Need Updates** | 106 |
 | **Compliance Rate** | 49.3% |
 
----
-
-## 🎯 Runtime Migration Progress
-
-The Flatpak Runtime Tracker monitors applications from ublue-os sources (bluefin, aurora, bazzite) for outdated runtimes. It runs weekly on Mondays at 9 AM UTC and automatically creates issues for applications that need runtime updates.
-
 **Target Runtimes:**
 - GNOME Platform: 49
 - KDE Platform: 6.9
@@ -33,11 +27,16 @@ Below is a record of all scheduled workflow runs that have checked for runtime u
 **Run Date:** 2025-10-27  
 **Run ID:** [18835461852](https://github.com/ublue-os/flatpak-tracker/actions/runs/18835461852)
 
-### Statistics
-- **Total Applications:** 209
-- **✅ Up to Date:** 103
-- **⏳ Need Updates:** 106
-- **Compliance Rate:** 49.3%
+| Application Name | Flatpak ID | Status | 
+|------------------|------------|--------|
+| Firefox          | [org.mozilla.Firefox] | Upgraded to Freedesktop Platform: 25.08 |
+
+
+### Stats
+- **Total**: 209
+- **Up to Date:** 103
+- **Need Updates:** 106
+- **Success Rate:** 49.3%
 
 ### Summary
 This scheduled workflow run checked 209 flatpak applications across all ublue-os sources. 106 applications were found with outdated runtimes and issues were created or updated for each.
