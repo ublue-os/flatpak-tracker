@@ -327,6 +327,51 @@ def load_outdated_packages(file_path: str) -> Tuple[List[OutdatedPackage], List[
         return [], []
 
 
+def group_packages_by_runtime(packages: List[OutdatedPackage]) -> Tuple[List[OutdatedPackage], List[OutdatedPackage], List[OutdatedPackage], List[OutdatedPackage]]:
+    """Group packages by runtime type (GNOME, KDE, Freedesktop, Other)."""
+    gnome_packages = []
+    kde_packages = []
+    freedesktop_packages = []
+    other_packages = []
+    
+    for package in packages:
+        runtime_name = package.current_runtime.split('/')[0] if '/' in package.current_runtime else package.current_runtime
+        if 'gnome' in runtime_name.lower():
+            gnome_packages.append(package)
+        elif 'kde' in runtime_name.lower():
+            kde_packages.append(package)
+        elif 'freedesktop' in runtime_name.lower():
+            freedesktop_packages.append(package)
+        else:
+            other_packages.append(package)
+    
+    return gnome_packages, kde_packages, freedesktop_packages, other_packages
+
+
+def identify_popular_packages(packages_by_runtime: Dict[str, List[OutdatedPackage]], top_n: int = 10) -> set:
+    """Identify top N most downloaded packages for each runtime group.
+    
+    Args:
+        packages_by_runtime: Dictionary mapping runtime names to package lists
+        top_n: Number of top packages to mark as popular (default: 10)
+        
+    Returns:
+        Set of flatpak IDs that should be marked as popular
+    """
+    popular_package_ids = set()
+    
+    for runtime_name, packages in packages_by_runtime.items():
+        # Sort by monthly downloads (descending)
+        sorted_packages = sorted(packages, key=lambda p: p.monthly_downloads, reverse=True)
+        
+        # Take top N packages (or all if fewer than N)
+        for i, package in enumerate(sorted_packages[:top_n]):
+            popular_package_ids.add(package.flatpak_id)
+            logger.info(f"Popular {runtime_name} app #{i+1}: {package.flatpak_id} ({package.monthly_downloads} downloads/month)")
+    
+    return popular_package_ids
+
+
 def main():
     """Main entry point for issue generation."""
     if len(sys.argv) != 2:
@@ -360,46 +405,17 @@ def main():
     logger.info(f"Tracking {len(all_tracked_packages)} total packages")
     
     # Group packages by runtime type
-    gnome_packages = []
-    kde_packages = []
-    freedesktop_packages = []
-    other_packages = []
-    
-    for package in packages:
-        runtime_name = package.current_runtime.split('/')[0] if '/' in package.current_runtime else package.current_runtime
-        if 'gnome' in runtime_name.lower():
-            gnome_packages.append(package)
-        elif 'kde' in runtime_name.lower():
-            kde_packages.append(package)
-        elif 'freedesktop' in runtime_name.lower():
-            freedesktop_packages.append(package)
-        else:
-            other_packages.append(package)
-    
-    # Sort each group by monthly downloads
-    gnome_packages.sort(key=lambda p: p.monthly_downloads, reverse=True)
-    kde_packages.sort(key=lambda p: p.monthly_downloads, reverse=True)
-    freedesktop_packages.sort(key=lambda p: p.monthly_downloads, reverse=True)
+    gnome_packages, kde_packages, freedesktop_packages, other_packages = group_packages_by_runtime(packages)
     
     logger.info(f"Grouped packages: {len(gnome_packages)} GNOME, {len(kde_packages)} KDE, {len(freedesktop_packages)} Freedesktop, {len(other_packages)} other")
     
     # Identify popular packages (top 10 in each runtime group)
-    popular_package_ids = set()
-    
-    # Top 10 GNOME packages
-    for i, package in enumerate(gnome_packages[:10]):
-        popular_package_ids.add(package.flatpak_id)
-        logger.info(f"Popular GNOME app #{i+1}: {package.flatpak_id} ({package.monthly_downloads} downloads/month)")
-    
-    # Top 10 KDE packages
-    for i, package in enumerate(kde_packages[:10]):
-        popular_package_ids.add(package.flatpak_id)
-        logger.info(f"Popular KDE app #{i+1}: {package.flatpak_id} ({package.monthly_downloads} downloads/month)")
-    
-    # Top 10 Freedesktop packages
-    for i, package in enumerate(freedesktop_packages[:10]):
-        popular_package_ids.add(package.flatpak_id)
-        logger.info(f"Popular Freedesktop app #{i+1}: {package.flatpak_id} ({package.monthly_downloads} downloads/month)")
+    packages_by_runtime = {
+        'GNOME': gnome_packages,
+        'KDE': kde_packages,
+        'Freedesktop': freedesktop_packages
+    }
+    popular_package_ids = identify_popular_packages(packages_by_runtime, top_n=10)
     
     logger.info(f"Total popular packages: {len(popular_package_ids)}")
     
