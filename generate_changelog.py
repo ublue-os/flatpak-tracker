@@ -385,21 +385,29 @@ class ChangelogGenerator:
 ## Overview Statistics
 *(Based on {run_date})*
 
+# Success Rate - {compliance_rate:.1f}% 
+
 | Metric | Count |
 |--------|-------|
 | **Total Applications Tracked** | {total_tracked} |
 | **✅ Up to Date** | {up_to_date} |
 | **⏳ Need Updates** | {len(packages)} |
-| **Compliance Rate** | {compliance_rate:.1f}% |
 
-**Target Runtimes:**
-- GNOME Platform: 49
-- KDE Platform: 6.9
-- Freedesktop Platform: 25.08
+## Contribution Opportunities by Platform**
+
+### [GNOME Platform: 49](https://github.com/{self.repo.full_name}/issues?q=is%3Aissue+is%3Aopen+label%3Agnome-49)
+### [KDE Platform: 6.9](https://github.com/{self.repo.full_name}/issues?q=is%3Aissue+is%3Aopen+label%3Akde-6.9)
+### [Freedesktop Platform: 25.08](https://github.com/{self.repo.full_name}/issues?q=is%3Aissue+is%3Aopen+label%3Afreedesktop-25.08)
 
 ---
 
-# Historical Updates
+# Purpose
+
+This website is designed to help new contributors find applications in Flathub that need runtime updates. Check the [open issues](https://github.com/{self.repo.full_name}/issues) and find your favorite app!
+
+This only tracks apps shipping in Aurora, Bazzite, and Bluefin. It also tracks the applications shipping in the [Bazaar](https://github.com/kolunmi/bazaar) curated sections. Our hope is by focusing on a core set of apps shipping to our users that we can help target the most popular applications. Thanks for helping!
+
+# Changelog
 
 Below is a record of all scheduled workflow runs that have checked for runtime updates.
 
@@ -559,33 +567,16 @@ This scheduled workflow run checked {total_tracked} flatpak applications across 
         # Combine: Dashboard + Current Week + Existing Historical (if any)
         full_changelog = dashboard + current_week_changelog
         
-        # Add "How This Works" section at the end
+        if existing_content:
+            # Insert existing historical content
+            full_changelog = full_changelog + "\n" + existing_content
+        
+        # Add footer
         full_changelog += """
-
-## How This Works
-
-The Flatpak Runtime Tracker:
-1. **Runs Weekly**: Executes every Monday at 9:00 AM UTC via GitHub Actions
-2. **Monitors Sources**: Checks applications from ublue-os/bluefin, ublue-os/aurora, and ublue-os/bazzite
-3. **Detects Outdated Runtimes**: Compares current runtime versions against latest available
-4. **Creates Issues**: Automatically opens GitHub issues for applications needing updates
-5. **Labels Priority**: Marks top 10 most downloaded apps per runtime as "popular"
-6. **Closes Resolved**: Automatically closes issues when runtimes are updated
-
-## Contributing
-
-Help keep applications up to date! Check the [open issues](https://github.com/{}/issues?q=is%3Aissue+is%3Aopen) for applications that need runtime updates.
-
 ---
 
 *This changelog is automatically maintained and updated with each scheduled workflow run.*
-""".format(self.repo.full_name)
-        
-        if existing_content:
-            # Insert existing historical content before "How This Works"
-            parts = full_changelog.split("\n\n## How This Works")
-            if len(parts) == 2:
-                full_changelog = parts[0] + "\n\n" + existing_content + "\n\n## How This Works" + parts[1]
+"""
         
         try:
             with open(self.output_file, 'w') as f:
