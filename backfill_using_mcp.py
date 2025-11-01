@@ -10,7 +10,7 @@ import logging
 import os
 import sys
 from datetime import datetime, timedelta
-from typing import Dict, List, Set, Tuple
+from typing import List, Set, Tuple
 from dataclasses import dataclass
 from pathlib import Path
 
