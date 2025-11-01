@@ -34,5 +34,6 @@ exclude:
   - temp_outdated.json
   - test_outdated.json
   - outdated_packages.json
+  - test_jekyll_build.sh
   - "*.pyc"
   - __pycache__
