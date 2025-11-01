@@ -1,5 +1,5 @@
 # 📊 Flatpak Runtime Tracker
-*Updated: November 01, 2025*
+*Updated: November 01, 2025 at 00:00 UTC*
 
 ## Overview Statistics
 
