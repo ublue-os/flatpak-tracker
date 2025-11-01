@@ -328,7 +328,14 @@ def load_outdated_packages(file_path: str) -> Tuple[List[OutdatedPackage], List[
 
 
 def group_packages_by_runtime(packages: List[OutdatedPackage]) -> Tuple[List[OutdatedPackage], List[OutdatedPackage], List[OutdatedPackage], List[OutdatedPackage]]:
-    """Group packages by runtime type (GNOME, KDE, Freedesktop, Other)."""
+    """Group packages by runtime type (GNOME, KDE, Freedesktop, Other).
+    
+    Args:
+        packages: List of outdated packages to group
+        
+    Returns:
+        Tuple of (gnome_packages, kde_packages, freedesktop_packages, other_packages)
+    """
     gnome_packages = []
     kde_packages = []
     freedesktop_packages = []
@@ -410,6 +417,8 @@ def main():
     logger.info(f"Grouped packages: {len(gnome_packages)} GNOME, {len(kde_packages)} KDE, {len(freedesktop_packages)} Freedesktop, {len(other_packages)} other")
     
     # Identify popular packages (top 10 in each runtime group)
+    # Note: other_packages (with unknown runtimes) are excluded from popular labeling
+    # since they don't fit into the standard GNOME/KDE/Freedesktop categories
     packages_by_runtime = {
         'GNOME': gnome_packages,
         'KDE': kde_packages,
