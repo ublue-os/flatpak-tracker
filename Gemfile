@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem "jekyll"
-gem "jekyll-gist"
-gem "jekyll-paginate"
-gem "jekyll-seo-tag"
+gem "jekyll", "~> 4.3"
+gem "jekyll-gist", "~> 1.5"
+gem "jekyll-paginate", "~> 1.1"
+gem "jekyll-seo-tag", "~> 2.8"
