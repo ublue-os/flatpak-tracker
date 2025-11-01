@@ -380,8 +380,7 @@ class ChangelogGenerator:
                 # If timestamp is missing or malformed, fall back to default run_date string
                 logger.warning("Could not parse timestamp from metadata; using default run_date.")
         
-        dashboard = f"""# 📊 Flatpak Runtime Tracker
-*Updated: {self.current_date.strftime('%B %d, %Y at %H:%M UTC')}*
+        dashboard = f"""*Updated: {self.current_date.strftime('%B %d, %Y at %H:%M UTC')}*
 
 ## Overview Statistics
 *(Based on {run_date})*

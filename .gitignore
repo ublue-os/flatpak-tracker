@@ -45,3 +45,8 @@ mock_outdated.json
 current_packages.json
 test_data.json
 updated_test.json
+
+# Jekyll
+_site/
+.jekyll-cache/
+.sass-cache/
