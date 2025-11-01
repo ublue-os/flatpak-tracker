@@ -307,7 +307,9 @@ def load_outdated_packages(file_path: str) -> Tuple[List[OutdatedPackage], List[
             
             # Fetch install count from Flathub
             try:
-                response = requests.get(f"https://flathub.org/api/v2/stats/{package.flatpak_id}")
+                # Remove 'app/' prefix for API call - Flathub API expects just the app ID
+                app_id = package.flatpak_id[4:] if package.flatpak_id.startswith('app/') else package.flatpak_id
+                response = requests.get(f"https://flathub.org/api/v2/stats/{app_id}")
                 if response.status_code == 200:
                     stats = response.json()
                     package.monthly_downloads = stats.get('installs_last_month', 0)
