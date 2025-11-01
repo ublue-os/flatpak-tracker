@@ -48,7 +48,32 @@ class IssueGenerator:
             return match.group(1)
         return None
     
-
+    def _get_runtime_label(self, runtime: str) -> Optional[str]:
+        """Extract runtime label from runtime string.
+        
+        Examples:
+            org.gnome.Platform/x86_64/49 -> gnome-49
+            org.freedesktop.Platform/x86_64/25.08 -> freedesktop-25.08
+            org.kde.Platform/x86_64/6.10 -> kde-6.10
+        """
+        if not runtime or '/' not in runtime:
+            return None
+        
+        parts = runtime.split('/')
+        if len(parts) < 3:
+            return None
+        
+        runtime_name = parts[0].lower()
+        version = parts[2]
+        
+        if 'gnome' in runtime_name:
+            return f"gnome-{version}"
+        elif 'kde' in runtime_name:
+            return f"kde-{version}"
+        elif 'freedesktop' in runtime_name:
+            return f"freedesktop-{version}"
+        
+        return None
     
     def create_issue_body(self, package: OutdatedPackage) -> str:
         """Generate the issue body content."""
@@ -146,6 +171,11 @@ If this is a false positive or the runtime is intentionally pinned to an older v
         labels = []
         if is_popular:
             labels.append("popular")
+        
+        # Add runtime version label
+        runtime_label = self._get_runtime_label(package.latest_runtime)
+        if runtime_label:
+            labels.append(runtime_label)
 
         if existing_issue:
             # Update existing issue
@@ -184,8 +214,14 @@ The runtime update instructions remain the same.
 *This issue was automatically updated by the flatpak-updater bot.*
 """.strip()
                     existing_issue.create_comment(update_comment)
+                    
+                    # Update labels
                     if is_popular:
                         existing_issue.add_to_labels("popular")
+                    runtime_label = self._get_runtime_label(package.latest_runtime)
+                    if runtime_label:
+                        existing_issue.add_to_labels(runtime_label)
+                    
                     return True
                 else:
                     logger.info(f"Issue #{existing_issue.number} for {package.flatpak_id} is already up to date")
