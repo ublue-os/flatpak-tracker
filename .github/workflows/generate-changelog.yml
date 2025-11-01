@@ -1,0 +1,85 @@
+name: Generate Changelog
+
+on:
+  schedule:
+    # Run every Monday at 11:00 AM UTC (2 hours after runtime check at 9 AM)
+    - cron: '0 11 * * 1'
+  workflow_dispatch:
+    # Allow manual triggering
+
+permissions:
+  contents: write
+  issues: read
+
+jobs:
+  generate-changelog:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      
+    - name: Set up Python
+      uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6
+      with:
+        python-version: '3.14'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Download latest outdated packages artifact
+      uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4
+      continue-on-error: true
+      with:
+        name: outdated-packages-data
+        path: .
+        
+    - name: Check if outdated_packages.json exists
+      id: check_file
+      run: |
+        if [ -f outdated_packages.json ]; then
+          echo "exists=true" >> $GITHUB_OUTPUT
+          echo "✅ Found outdated_packages.json"
+        else
+          echo "exists=false" >> $GITHUB_OUTPUT
+          echo "⚠️ outdated_packages.json not found - using fallback"
+          # Create a minimal fallback file
+          echo '{"timestamp":"","total_checked":0,"outdated_count":0,"outdated_packages":[],"all_tracked_packages":[]}' > outdated_packages.json
+        fi
+        
+    - name: Generate changelog
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+      run: |
+        echo "🔄 Generating weekly changelog update..."
+        python generate_changelog.py outdated_packages.json
+        
+    - name: Display changelog preview
+      run: |
+        echo "## Changelog Preview"
+        if [ -f CHANGELOG.md ]; then
+          head -n 50 CHANGELOG.md
+        else
+          echo "❌ CHANGELOG.md was not generated"
+          exit 1
+        fi
+        
+    - name: Commit and push changelog
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        
+        # Add the changelog
+        git add CHANGELOG.md
+        
+        # Check if there are changes to commit
+        if git diff --cached --quiet; then
+          echo "📝 No changes to changelog"
+        else
+          echo "✅ Committing updated changelog"
+          git commit -m "Update changelog - $(date +'%Y-%m-%d')"
+          git push
+        fi
