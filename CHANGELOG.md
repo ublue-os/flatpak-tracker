@@ -29,8 +29,8 @@ Below is a record of all scheduled workflow runs that have checked for runtime u
 
 | Application Name | Flatpak ID | Current Runtime | Target Runtime |
 |------------------|------------|-----------------|----------------|
-| Warp | [app.drey.Warp](https://github.com/flathub/app.drey.Warp) | org.gnome.Platform 48 | org.gnome.Platform 49 |
-| VintageStory | [at.vintagestory.VintageStory](https://github.com/flathub/at.vintagestory.VintageStory) | org.freedesktop.Platform 24.08 | org.freedesktop.Platform 25.08 |
+| Warp | [app.drey.Warp](https://github.com/flathub/app.drey.Warp) | `gnome-48` | `gnome-49` |
+| VintageStory | [at.vintagestory.VintageStory](https://github.com/flathub/at.vintagestory.VintageStory) | `freedesktop-24.08` | `freedesktop-25.08` |
 | nookdesktop | [camp.nook.nookdesktop](https://github.com/flathub/camp.nook.nookdesktop) | org.freedesktop.Platform 24.08 | org.freedesktop.Platform 25.08 |
 | ETLegacy | [com.etlegacy.ETLegacy](https://github.com/flathub/com.etlegacy.ETLegacy) | org.freedesktop.Platform 24.08 | org.freedesktop.Platform 25.08 |
 | Boatswain | [com.feaneron.Boatswain](https://github.com/flathub/com.feaneron.Boatswain) | org.gnome.Platform 48 | org.gnome.Platform 49 |
