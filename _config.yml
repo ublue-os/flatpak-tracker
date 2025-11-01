@@ -1,0 +1,21 @@
+title: Flatpak Runtime Tracker
+description: Tracking runtime updates for flatpaks shipped by Universal Blue
+theme: jekyll-theme-cayman
+
+# Use CHANGELOG.md as the main page instead of README.md
+include:
+  - CHANGELOG.md
+
+# Exclude development and build files from the site
+exclude:
+  - requirements.txt
+  - check_flatpak_runtimes.py
+  - issue_generator.py
+  - generate_changelog.py
+  - check_donation_metadata.py
+  - create_mock_data.py
+  - temp_outdated.json
+  - test_outdated.json
+  - outdated_packages.json
+  - "*.pyc"
+  - __pycache__
