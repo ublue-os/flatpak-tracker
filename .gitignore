@@ -50,3 +50,6 @@ updated_test.json
 _site/
 .jekyll-cache/
 .sass-cache/
+vendor/
+.bundle/
+Gemfile.lock

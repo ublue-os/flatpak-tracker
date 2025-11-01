@@ -11,12 +11,17 @@ author:
   name: Universal Blue
   url: https://github.com/ublue-os
 
+# Gems
+plugins:
+
 # Use CHANGELOG.md as the main page instead of README.md
 include:
   - CHANGELOG.md
 
 # Exclude development and build files from the site
 exclude:
+  - Gemfile
+  - Gemfile.lock
   - requirements.txt
   - check_flatpak_runtimes.py
   - issue_generator.py
