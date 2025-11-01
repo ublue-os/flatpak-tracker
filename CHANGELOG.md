@@ -64,7 +64,7 @@ View detailed logs and statistics in the [workflow run]( https://github.com/ublu
 ### Summary
 Scheduled workflow run completed successfully. Runtime checks were performed and issues were created/updated for applications with outdated runtimes.
 
-View detailed logs and statistics in the [workflow run]( https://github.com/ublue-os/flatpak-tracker/actions/runs/18460651533).
+View detailed logs and statistics in the [workflow run](https://github.com/ublue-os/flatpak-tracker/actions/runs/18460651533).
 
 ---
 
