@@ -267,6 +267,63 @@ class ChangelogGenerator:
             logger.warning(f"Could not fetch recently closed issues: {e}")
             return []
     
+    def format_runtime_as_label(self, runtime: str, version: str) -> str:
+        """Convert runtime format to GitHub label format with backticks.
+        
+        Examples:
+            org.gnome.Platform/x86_64/48 -> `gnome-48`
+            org.freedesktop.Platform/x86_64/24.08 -> `freedesktop-24.08`
+            org.kde.Platform/x86_64/6.9 -> `kde-6.9`
+        """
+        if '/' in runtime:
+            platform_name = runtime.split('/')[0]  # Extract org.gnome.Platform
+        else:
+            platform_name = runtime
+        
+        # Extract the platform type (gnome, freedesktop, kde)
+        if 'gnome' in platform_name.lower():
+            platform_type = 'gnome'
+        elif 'freedesktop' in platform_name.lower():
+            platform_type = 'freedesktop'
+        elif 'kde' in platform_name.lower():
+            platform_type = 'kde'
+        else:
+            # Fallback to showing full runtime
+            return f"`{platform_name} {version}`"
+        
+        return f"`{platform_type}-{version}`"
+    
+    def generate_application_table(self, packages: List[OutdatedPackage]) -> str:
+        """Generate a markdown table of outdated applications in the CHANGELOG format."""
+        if not packages:
+            return "*All applications were up to date in this run!*\n\n"
+        
+        table = "| Application Name | Flatpak ID | Current Runtime | Target Runtime |\n"
+        table += "|------------------|------------|-----------------|----------------|\n"
+        
+        # Sort by flatpak_id for consistency
+        sorted_packages = sorted(packages, key=lambda x: x.flatpak_id)
+        
+        for pkg in sorted_packages:
+            flatpak_id = pkg.flatpak_id
+            # Remove 'app/' prefix if present
+            clean_id = flatpak_id.replace('app/', '')
+            # Extract application name (last part after the last dot)
+            app_name = clean_id.split('.')[-1]
+            
+            # Create Flathub GitHub link
+            flathub_link = f"https://github.com/flathub/{clean_id}"
+            linked_id = f"[{clean_id}]({flathub_link})"
+            
+            # Format runtimes as GitHub labels
+            current_label = self.format_runtime_as_label(pkg.current_runtime, pkg.current_version)
+            target_label = self.format_runtime_as_label(pkg.latest_runtime, pkg.latest_version)
+            
+            table += f"| {app_name} | {linked_id} | {current_label} | {target_label} |\n"
+        
+        table += "\n"
+        return table
+    
     def group_packages_by_runtime(self, packages: List[OutdatedPackage]) -> Dict[str, List[OutdatedPackage]]:
         """Group packages by runtime family (GNOME, KDE, Freedesktop)."""
         groups = {
@@ -307,17 +364,26 @@ class ChangelogGenerator:
     
     def generate_dashboard_section(self, packages: List[OutdatedPackage], 
                                    all_tracked: List[str], 
-                                   recently_closed: List[dict],
-                                   packages_by_runtime: Dict[str, List[OutdatedPackage]]) -> str:
+                                   metadata: dict) -> str:
         """Generate the dashboard statistics section."""
         total_tracked = len(all_tracked)
         up_to_date = total_tracked - len(packages)
         compliance_rate = (up_to_date / total_tracked * 100) if total_tracked > 0 else 0
         
+        # Extract run date from metadata if available
+        run_date = "most recent scheduled run"
+        if metadata.get('timestamp'):
+            try:
+                ts = datetime.fromisoformat(metadata['timestamp'].replace('Z', '+00:00'))
+                run_date = f"most recent scheduled run: {ts.strftime('%Y-%m-%d')}"
+            except:
+                pass
+        
         dashboard = f"""# 📊 Flatpak Runtime Tracker
 *Updated: {self.current_date.strftime('%B %d, %Y at %H:%M UTC')}*
 
 ## Overview Statistics
+*(Based on {run_date})*
 
 | Metric | Count |
 |--------|-------|
@@ -326,131 +392,70 @@ class ChangelogGenerator:
 | **⏳ Need Updates** | {len(packages)} |
 | **Compliance Rate** | {compliance_rate:.1f}% |
 
+**Target Runtimes:**
+- GNOME Platform: 49
+- KDE Platform: 6.9
+- Freedesktop Platform: 25.08
+
 ---
 
-## 🎯 Runtime Migration Progress
+# Historical Updates
+
+Below is a record of all scheduled workflow runs that have checked for runtime updates.
+
 """
-        
-        # Add progress for each runtime
-        for runtime_name in ['GNOME', 'KDE', 'Freedesktop']:
-            runtime_packages = packages_by_runtime.get(runtime_name, [])
-            if runtime_packages:
-                # Determine the target version from the most common latest_version
-                target_version = runtime_packages[0].latest_version if runtime_packages else "N/A"
-                
-                dashboard += f"\n### {runtime_name} Platform {target_version}\n"
-                dashboard += f"**{len(runtime_packages)} applications** need updates\n\n"
-        
-        dashboard += "---\n\n"
         return dashboard
     
     def generate_changelog_section(self, packages: List[OutdatedPackage],
-                                   recently_closed: List[dict],
-                                   popular_package_ids: set) -> str:
-        """Generate the timeline/changelog section."""
+                                   metadata: dict) -> str:
+        """Generate the weekly changelog section with table format."""
         
         # Get week range
         start_of_week = self.current_date - timedelta(days=self.current_date.weekday())
         end_of_week = start_of_week + timedelta(days=6)
         week_range = f"{start_of_week.strftime('%B %d')} - {end_of_week.strftime('%B %d, %Y')}"
         
-        changelog = f"""# Weekly Update
-**Week of {week_range}**
+        # Try to get run date and ID from workflow or use current date
+        run_date = self.current_date.strftime('%Y-%m-%d')
+        run_id_link = "[Run ID unavailable]"
+        
+        # Get latest workflow run to extract run ID
+        try:
+            workflows = self.repo.get_workflows()
+            for workflow in workflows:
+                if "Check Flatpak Runtime Updates" in workflow.name:
+                    runs = workflow.get_runs(status='completed', event='schedule')
+                    latest_run = next(iter(runs), None)
+                    if latest_run:
+                        run_id_link = f"[{latest_run.id}](https://github.com/{self.repo.full_name}/actions/runs/{latest_run.id})"
+                        run_date = latest_run.created_at.strftime('%Y-%m-%d')
+                    break
+        except Exception as e:
+            logger.debug(f"Could not fetch workflow run info: {e}")
+        
+        total_tracked = metadata.get('total_checked', len(packages))
+        outdated_count = metadata.get('outdated_count', len(packages))
+        up_to_date = total_tracked - outdated_count
+        success_rate = ((up_to_date / total_tracked * 100) if total_tracked > 0 else 0)
+        
+        changelog = f"""## Week of {week_range}
+
+**Run Date:** {run_date}  
+**Run ID:** {run_id_link}
+
+{self.generate_application_table(packages)}
+### Stats
+- **Total**: {total_tracked}
+- **Up to Date:** {up_to_date}
+- **Need Updates:** {outdated_count}
+- **Success Rate:** {success_rate:.1f}%
+
+### Summary
+This scheduled workflow run checked {total_tracked} flatpak applications across all ublue-os sources. {outdated_count} applications were found with outdated runtimes and issues were created or updated for each.
 
 ---
 
 """
-        
-        # Recently Updated section
-        if recently_closed:
-            changelog += f"## 🎉 Recently Updated ({len(recently_closed)} applications)\n"
-            changelog += "*These applications have successfully updated to the latest runtime!*\n\n"
-            
-            for item in recently_closed[:15]:  # Show top 15
-                flatpak_id = item['flatpak_id']
-                issue_num = item['issue_number']
-                app_name = flatpak_id.replace('app/', '').split('.')[-1]
-                changelog += f"- ✅ **{app_name}** (`{flatpak_id}`) - [#{issue_num}](https://github.com/{self.repo.full_name}/issues/{issue_num})\n"
-            
-            if len(recently_closed) > 15:
-                changelog += f"\n<details>\n<summary>View {len(recently_closed) - 15} more recently updated apps...</summary>\n\n"
-                for item in recently_closed[15:]:
-                    flatpak_id = item['flatpak_id']
-                    issue_num = item['issue_number']
-                    app_name = flatpak_id.replace('app/', '').split('.')[-1]
-                    changelog += f"- ✅ **{app_name}** - [#{issue_num}](https://github.com/{self.repo.full_name}/issues/{issue_num})\n"
-                changelog += "\n</details>\n"
-            
-            changelog += "\n---\n\n"
-        
-        # Pending Updates section
-        if packages:
-            changelog += f"## 🔄 Pending Updates ({len(packages)} applications)\n"
-            changelog += "*These applications still need runtime updates. Click to help!*\n\n"
-            
-            # Separate popular from standard
-            popular_packages = [p for p in packages if p.flatpak_id in popular_package_ids]
-            standard_packages = [p for p in packages if p.flatpak_id not in popular_package_ids]
-            
-            if popular_packages:
-                changelog += f"### 🔥 High Priority (Popular Apps - Top {len(popular_packages)})\n\n"
-                for package in popular_packages[:10]:  # Show top 10 popular
-                    app_name = package.flatpak_id.replace('app/', '').split('.')[-1]
-                    issue_num = self.get_issue_number_for_package(package.flatpak_id)
-                    version_change = f"{package.current_version} → {package.latest_version}"
-                    
-                    if issue_num:
-                        changelog += f"- 🔥 **{app_name}** (`{package.flatpak_id}`) - {version_change} - [#{issue_num}](https://github.com/{self.repo.full_name}/issues/{issue_num})\n"
-                    else:
-                        changelog += f"- 🔥 **{app_name}** (`{package.flatpak_id}`) - {version_change}\n"
-                
-                if len(popular_packages) > 10:
-                    changelog += f"\n<details>\n<summary>View {len(popular_packages) - 10} more high priority apps...</summary>\n\n"
-                    for package in popular_packages[10:]:
-                        app_name = package.flatpak_id.replace('app/', '').split('.')[-1]
-                        issue_num = self.get_issue_number_for_package(package.flatpak_id)
-                        version_change = f"{package.current_version} → {package.latest_version}"
-                        
-                        if issue_num:
-                            changelog += f"- 🔥 **{app_name}** - {version_change} - [#{issue_num}](https://github.com/{self.repo.full_name}/issues/{issue_num})\n"
-                        else:
-                            changelog += f"- 🔥 **{app_name}** - {version_change}\n"
-                    changelog += "\n</details>\n"
-                
-                changelog += "\n"
-            
-            if standard_packages:
-                changelog += f"### Standard Priority ({len(standard_packages)} applications)\n\n"
-                changelog += "<details>\n<summary>View all standard priority apps...</summary>\n\n"
-                
-                for package in standard_packages:
-                    app_name = package.flatpak_id.replace('app/', '').split('.')[-1]
-                    issue_num = self.get_issue_number_for_package(package.flatpak_id)
-                    version_change = f"{package.current_version} → {package.latest_version}"
-                    
-                    if issue_num:
-                        changelog += f"- **{app_name}** (`{package.flatpak_id}`) - {version_change} - [#{issue_num}](https://github.com/{self.repo.full_name}/issues/{issue_num})\n"
-                    else:
-                        changelog += f"- **{app_name}** (`{package.flatpak_id}`) - {version_change}\n"
-                
-                changelog += "\n</details>\n"
-            
-            changelog += "\n---\n\n"
-        
-        # How to help section
-        changelog += """## 💡 How You Can Help
-
-1. **Test existing PRs**: Many apps already have updates pending on Flathub - test them!
-2. **Submit updates**: Follow the instructions in each issue to update manifests
-3. **Report issues**: If you find problems with updated apps, report them upstream
-
-[View all open issues →](https://github.com/{}/issues?q=is%3Aissue+is%3Aopen)
-
----
-
-*This changelog updates automatically every Monday at 11:00 UTC, 2 hours after the runtime check runs.*
-""".format(self.repo.full_name)
-        
         return changelog
     
     def generate_historical_changelog_sections(self, snapshots: List[HistoricalSnapshot]) -> str:
@@ -521,51 +526,66 @@ class ChangelogGenerator:
         
         # Load data
         packages, all_tracked, metadata = self.load_outdated_packages(outdated_file)
-        recently_closed = self.get_recently_closed_issues(days=7)
         
         if not packages and not all_tracked:
             logger.warning("No data available to generate changelog")
             return
         
         logger.info(f"Found {len(packages)} outdated packages, {len(all_tracked)} total tracked")
-        logger.info(f"Found {len(recently_closed)} recently closed issues")
-        
-        # Group packages by runtime
-        packages_by_runtime = self.group_packages_by_runtime(packages)
-        
-        # Identify popular packages (excluding 'Other' category)
-        popular_package_ids = self.identify_popular_packages(packages_by_runtime, top_n=10)
-        logger.info(f"Identified {len(popular_package_ids)} popular packages")
         
         # Generate dashboard section
-        dashboard = self.generate_dashboard_section(packages, all_tracked, recently_closed, packages_by_runtime)
+        dashboard = self.generate_dashboard_section(packages, all_tracked, metadata)
         
         # Generate changelog section for current week
-        current_week_changelog = self.generate_changelog_section(packages, recently_closed, popular_package_ids)
+        current_week_changelog = self.generate_changelog_section(packages, metadata)
         
         # Check if CHANGELOG.md already exists
         existing_content = ""
         if os.path.exists(self.output_file):
-            logger.info("Existing changelog found - will prepend new updates")
+            logger.info("Existing changelog found - will keep existing historical sections")
             with open(self.output_file, 'r') as f:
                 content = f.read()
-                # Extract everything after "# Historical Updates" or "# Weekly Update"
-                # We'll keep the historical sections
-                if "# Historical Updates" in content:
-                    existing_content = "\n" + content.split("# Historical Updates", 1)[1]
-                elif content.count("# Weekly Update") > 1:
-                    # There are multiple weeks, keep everything after the first week
-                    parts = content.split("# Weekly Update")
-                    # Keep all weeks except the dashboard and current week
-                    if len(parts) > 2:
-                        existing_content = "\n# Historical Updates\n\n## Week of " + "## Week of ".join(parts[2:])
+                # Extract everything after the first "## Week of" to preserve historical data
+                if "## Week of" in content:
+                    parts = content.split("## Week of", 1)
+                    if len(parts) > 1:
+                        # Keep everything from the second week onwards
+                        existing_content = "## Week of " + parts[1]
+                        # If there's another week, extract it and all subsequent weeks
+                        if "## Week of" in existing_content:
+                            # Keep old weeks as historical sections
+                            pass
         
-        # Combine: Dashboard + Current Week + Existing Historical
+        # Combine: Dashboard + Current Week + Existing Historical (if any)
         full_changelog = dashboard + current_week_changelog
         
+        # Add "How This Works" section at the end
+        full_changelog += """
+
+## How This Works
+
+The Flatpak Runtime Tracker:
+1. **Runs Weekly**: Executes every Monday at 9:00 AM UTC via GitHub Actions
+2. **Monitors Sources**: Checks applications from ublue-os/bluefin, ublue-os/aurora, and ublue-os/bazzite
+3. **Detects Outdated Runtimes**: Compares current runtime versions against latest available
+4. **Creates Issues**: Automatically opens GitHub issues for applications needing updates
+5. **Labels Priority**: Marks top 10 most downloaded apps per runtime as "popular"
+6. **Closes Resolved**: Automatically closes issues when runtimes are updated
+
+## Contributing
+
+Help keep applications up to date! Check the [open issues](https://github.com/{}/issues?q=is%3Aissue+is%3Aopen) for applications that need runtime updates.
+
+---
+
+*This changelog is automatically maintained and updated with each scheduled workflow run.*
+""".format(self.repo.full_name)
+        
         if existing_content:
-            # Move the previous current week to historical
-            full_changelog += existing_content
+            # Insert existing historical content before "How This Works"
+            parts = full_changelog.split("\n\n## How This Works")
+            if len(parts) == 2:
+                full_changelog = parts[0] + "\n\n" + existing_content + "\n\n## How This Works" + parts[1]
         
         try:
             with open(self.output_file, 'w') as f:
