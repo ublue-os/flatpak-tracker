@@ -13,6 +13,9 @@ author:
 
 # Gems
 plugins:
+  - jekyll-paginate
+  - jekyll-gist
+  - jekyll-seo-tag
 
 # Use CHANGELOG.md as the main page instead of README.md
 include:
