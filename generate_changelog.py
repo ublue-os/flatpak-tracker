@@ -393,10 +393,11 @@ class ChangelogGenerator:
 | **✅ Up to Date** | {up_to_date} |
 | **⏳ Need Updates** | {len(packages)} |
 
-**Target Runtimes:**
-- GNOME Platform: 49  [link to issues](https://github.com/{self.repo.full_name}/issues?q=is%3Aissue+is%3Aopen+label%3Agnome-49)
-- KDE Platform: 6.9 [link to issues](https://github.com/{self.repo.full_name}/issues?q=is%3Aissue+is%3Aopen+label%3Akde-6.9)
-- Freedesktop Platform: 25.08 [link to issues](https://github.com/{self.repo.full_name}/issues?q=is%3Aissue+is%3Aopen+label%3Afreedesktop-25.08)
+## Contribution Opportunities by Platform**
+
+### [GNOME Platform: 49](https://github.com/{self.repo.full_name}/issues?q=is%3Aissue+is%3Aopen+label%3Agnome-49)
+### [KDE Platform: 6.9](https://github.com/{self.repo.full_name}/issues?q=is%3Aissue+is%3Aopen+label%3Akde-6.9)
+### [Freedesktop Platform: 25.08](https://github.com/{self.repo.full_name}/issues?q=is%3Aissue+is%3Aopen+label%3Afreedesktop-25.08)
 
 ---
 
