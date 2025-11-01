@@ -2,7 +2,7 @@
 title: Flatpak Runtime Tracker
 tagline: 'Tracking runtime updates for Universal Blue'
 description: 'Tracking runtime updates for flatpak applications shipped by Universal Blue (Bluefin, Aurora, Bazzite)'
-url: https://ublue-os.github.io/flatpak-tracker
+url: https://ublue-os.github.io
 baseurl: '/flatpak-tracker'
 permalink: pretty
 
@@ -13,6 +13,9 @@ author:
 
 # Gems
 plugins:
+  - jekyll-paginate
+  - jekyll-gist
+  - jekyll-seo-tag
 
 # Use CHANGELOG.md as the main page instead of README.md
 include:
@@ -31,5 +34,6 @@ exclude:
   - temp_outdated.json
   - test_outdated.json
   - outdated_packages.json
+  - test_jekyll_build.sh
   - "*.pyc"
   - __pycache__
