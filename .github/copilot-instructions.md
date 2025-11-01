@@ -578,3 +578,98 @@ The tool is designed to be **resilient and graceful**:
 - **Artifact missing**: Changelog generator creates minimal fallback entry
 
 This ensures workflows don't fail catastrophically and provide useful partial results.
+
+## Errors Encountered During Onboarding
+
+This section documents errors encountered while onboarding this repository and the workarounds implemented:
+
+### 1. Network DNS Resolution Failure for flathub.org
+**Error**: `NameResolutionError: Failed to resolve 'flathub.org' ([Errno -5] No address associated with hostname)`
+
+**Context**: When running `check_flatpak_runtimes.py` or `check_donation_metadata.py` in restricted network environments (CI runners, sandboxed environments), DNS resolution for flathub.org fails.
+
+**Workaround**:
+- Scripts use a **three-tier fallback strategy** for runtime version detection:
+  1. Known current versions (hardcoded in script)
+  2. Flathub API queries (if accessible)
+  3. Local flatpak command (if available)
+- All API calls wrapped in try-except blocks with graceful degradation
+- Scripts log warnings but continue processing other packages
+- Documented as expected behavior in restricted environments
+
+**Documentation Added**: Network Restriction Handling section in copilot-instructions.md
+
+### 2. Flatpak Command Not Available
+**Error**: `bash: flatpak: command not found`
+
+**Context**: In fresh CI environments or local development without flatpak installed, the `flatpak` command is unavailable, preventing runtime version queries.
+
+**Workaround**:
+- Made flatpak installation optional (documented as "optional - fallback mechanisms exist")
+- Primary reliance on hardcoded known runtime versions
+- Flatpak command only used as tertiary fallback
+- Script succeeds even without flatpak installed
+
+**Documentation Added**: Bootstrap section notes flatpak is not strictly required
+
+### 3. Missing GitHub Credentials for Local Testing
+**Error**: `GITHUB_TOKEN environment variable is required`
+
+**Context**: When testing `issue_generator.py` or `generate_changelog.py` locally, GitHub credentials are required but not available.
+
+**Workaround**:
+- Added comprehensive dry-run testing instructions
+- Created end-to-end test that validates JSON structure without requiring credentials
+- Documented which tests can run without credentials vs. which require them
+- Provided clear instructions for setting up test repositories
+
+**Documentation Added**: End-to-End Testing section with specific test scripts and manual testing procedures
+
+### 4. Flathub API Returning Empty Responses
+**Error**: Empty response body from `https://flathub.org/api/v2/appstream/{package_id}`
+
+**Context**: Some API endpoints return empty responses either due to network issues or package not being available.
+
+**Workaround**:
+- All API responses validated before parsing
+- Scripts check HTTP status codes and response content
+- Missing data handled gracefully with skip logic
+- Warnings logged but processing continues
+
+**Documentation Added**: Error Handling Philosophy section explains resilience approach
+
+### 5. Jekyll Build Dependencies Not Available
+**Error**: Missing Ruby gems or bundler for local Jekyll testing
+
+**Context**: Testing the Jekyll website locally requires Ruby environment setup which may not be available.
+
+**Workaround**:
+- Documented Jekyll testing as optional for local development
+- GitHub Actions handles Jekyll build automatically
+- Provided alternative: verify markdown syntax and structure directly
+- Noted that Jekyll deployment works via GitHub Actions without local testing
+
+**Documentation Added**: Jekyll Website section notes local testing requires Ruby/bundler
+
+### 6. Workflow Artifact Dependencies
+**Error**: "Artifact not found" when running changelog generation before runtime check
+
+**Context**: `generate-changelog.yml` depends on artifact from `check-flatpak-runtimes.yml`, but if runtime check hasn't run, artifact doesn't exist.
+
+**Workaround**:
+- Added `continue-on-error: true` to artifact download step
+- Created fallback logic to generate minimal changelog entry when artifact missing
+- Documented workflow orchestration and dependencies
+- Provided manual testing sequence
+
+**Documentation Added**: Workflow Orchestration Testing section explains proper order and dependencies
+
+### Summary of Validation Approach
+Given the network restrictions and environment limitations:
+1. **Focus on syntax validation**: `python -m py_compile` for all scripts
+2. **Test JSON structure**: Verify output format without network calls
+3. **Document expected failures**: Clearly mark which errors are expected in restricted environments
+4. **Provide fallback mechanisms**: Ensure scripts work with degraded functionality
+5. **Enable dry-run testing**: Allow validation without credentials or external services
+
+All encountered errors have been documented with workarounds in the relevant sections of this guide.
