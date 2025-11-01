@@ -29,6 +29,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         
+    - name: Install Flatpak and jq
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y flatpak jq
+        sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo || true
+        
     - name: Download latest outdated packages artifact
       uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6
       continue-on-error: true
@@ -36,17 +42,26 @@ jobs:
         name: outdated-packages-data
         path: .
         
-    - name: Check if outdated_packages.json exists
+    - name: Check if outdated_packages.json exists and generate if needed
       id: check_file
       run: |
         if [ -f outdated_packages.json ]; then
           echo "exists=true" >> $GITHUB_OUTPUT
-          echo "✅ Found outdated_packages.json"
+          echo "✅ Found outdated_packages.json from artifact"
         else
           echo "exists=false" >> $GITHUB_OUTPUT
-          echo "⚠️ outdated_packages.json not found - using fallback"
-          # Create a minimal fallback file
-          echo '{"timestamp":"","total_checked":0,"outdated_count":0,"outdated_packages":[],"all_tracked_packages":[]}' > outdated_packages.json
+          echo "⚠️ outdated_packages.json not found - generating fresh data"
+          echo "🔄 Running check_flatpak_runtimes.py to generate current data..."
+          python check_flatpak_runtimes.py --output outdated_packages.json
+          
+          if [ -f outdated_packages.json ]; then
+            echo "✅ Successfully generated outdated_packages.json"
+            echo "📊 Summary:"
+            jq -r '"Total checked: \(.total_checked), Outdated: \(.outdated_count)"' outdated_packages.json
+          else
+            echo "❌ Failed to generate outdated_packages.json - creating minimal fallback"
+            echo '{"timestamp":"","total_checked":0,"outdated_count":0,"outdated_packages":[],"all_tracked_packages":[]}' > outdated_packages.json
+          fi
         fi
         
     - name: Generate changelog
