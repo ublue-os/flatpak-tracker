@@ -515,8 +515,8 @@ class ChangelogGenerator:
         
         return ""
     
-    def generate_changelog(self, outdated_file: str, backfill: bool = False):
-        """Generate the complete changelog."""
+    def generate_changelog(self, outdated_file: str):
+        """Generate the complete changelog by prepending current week's update."""
         logger.info(f"Generating changelog from {outdated_file}")
         
         # Load data
@@ -541,17 +541,31 @@ class ChangelogGenerator:
         dashboard = self.generate_dashboard_section(packages, all_tracked, recently_closed, packages_by_runtime)
         
         # Generate changelog section for current week
-        changelog = self.generate_changelog_section(packages, recently_closed, popular_package_ids)
+        current_week_changelog = self.generate_changelog_section(packages, recently_closed, popular_package_ids)
         
-        # Generate historical sections if backfill is enabled
-        historical_changelog = ""
-        if backfill:
-            logger.info("Backfilling historical data from previous workflow runs...")
-            snapshots = self.build_historical_snapshots()
-            historical_changelog = self.generate_historical_changelog_sections(snapshots)
+        # Check if CHANGELOG.md already exists
+        existing_content = ""
+        if os.path.exists(self.output_file):
+            logger.info("Existing changelog found - will prepend new updates")
+            with open(self.output_file, 'r') as f:
+                content = f.read()
+                # Extract everything after "# Historical Updates" or "# Weekly Update"
+                # We'll keep the historical sections
+                if "# Historical Updates" in content:
+                    existing_content = "\n" + content.split("# Historical Updates", 1)[1]
+                elif content.count("# Weekly Update") > 1:
+                    # There are multiple weeks, keep everything after the first week
+                    parts = content.split("# Weekly Update")
+                    # Keep all weeks except the dashboard and current week
+                    if len(parts) > 2:
+                        existing_content = "\n# Historical Updates\n\n## Week of " + "## Week of ".join(parts[2:])
         
-        # Combine all sections
-        full_changelog = dashboard + changelog + historical_changelog
+        # Combine: Dashboard + Current Week + Existing Historical
+        full_changelog = dashboard + current_week_changelog
+        
+        if existing_content:
+            # Move the previous current week to historical
+            full_changelog += existing_content
         
         try:
             with open(self.output_file, 'w') as f:
@@ -568,8 +582,6 @@ def main():
     
     parser = argparse.ArgumentParser(description='Generate changelog from flatpak runtime update data')
     parser.add_argument('outdated_file', help='Path to outdated_packages.json file')
-    parser.add_argument('--backfill', action='store_true', 
-                       help='Backfill historical data from previous scheduled workflow runs')
     args = parser.parse_args()
     
     outdated_file = args.outdated_file
@@ -591,7 +603,7 @@ def main():
     
     # Generate changelog
     generator = ChangelogGenerator(github_token, repo_name)
-    generator.generate_changelog(outdated_file, backfill=args.backfill)
+    generator.generate_changelog(outdated_file)
     
     logger.info("Changelog generation complete")
 

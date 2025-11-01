@@ -54,16 +54,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_REPOSITORY: ${{ github.repository }}
       run: |
-        echo "🔄 Generating changelog..."
-        
-        # Check if CHANGELOG.md already exists
-        if [ ! -f CHANGELOG.md ]; then
-          echo "📚 First run detected - backfilling historical data from previous workflow runs"
-          python generate_changelog.py outdated_packages.json --backfill
-        else
-          echo "📝 Generating regular weekly update"
-          python generate_changelog.py outdated_packages.json
-        fi
+        echo "🔄 Generating weekly changelog update..."
+        python generate_changelog.py outdated_packages.json
         
     - name: Display changelog preview
       run: |
