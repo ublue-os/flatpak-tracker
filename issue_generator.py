@@ -133,7 +133,7 @@ If this is a false positive or the runtime is intentionally pinned to an older v
             logger.error(f"Error checking existing issues: {e}")
             return None
     
-    def create_or_update_issue(self, package: OutdatedPackage, is_important: bool = False) -> bool:
+    def create_or_update_issue(self, package: OutdatedPackage, is_popular: bool = False) -> bool:
         """Create a GitHub issue for an outdated package or update existing one."""
         issue_title = f"Update runtime for {package.flatpak_id}"
         
@@ -144,8 +144,8 @@ If this is a false positive or the runtime is intentionally pinned to an older v
         body = self.create_issue_body(package)
         
         labels = []
-        if is_important:
-            labels.append("important")
+        if is_popular:
+            labels.append("popular")
 
         if existing_issue:
             # Update existing issue
@@ -184,8 +184,8 @@ The runtime update instructions remain the same.
 *This issue was automatically updated by the flatpak-updater bot.*
 """.strip()
                     existing_issue.create_comment(update_comment)
-                    if is_important:
-                        existing_issue.add_to_labels("important")
+                    if is_popular:
+                        existing_issue.add_to_labels("popular")
                     return True
                 else:
                     logger.info(f"Issue #{existing_issue.number} for {package.flatpak_id} is already up to date")
@@ -359,8 +359,49 @@ def main():
     logger.info(f"Found {len(packages)} outdated packages")
     logger.info(f"Tracking {len(all_tracked_packages)} total packages")
     
-    # Sort packages by install count
-    packages.sort(key=lambda p: p.installs, reverse=True)
+    # Group packages by runtime type
+    gnome_packages = []
+    kde_packages = []
+    freedesktop_packages = []
+    other_packages = []
+    
+    for package in packages:
+        runtime_name = package.current_runtime.split('/')[0] if '/' in package.current_runtime else package.current_runtime
+        if 'gnome' in runtime_name.lower():
+            gnome_packages.append(package)
+        elif 'kde' in runtime_name.lower():
+            kde_packages.append(package)
+        elif 'freedesktop' in runtime_name.lower():
+            freedesktop_packages.append(package)
+        else:
+            other_packages.append(package)
+    
+    # Sort each group by monthly downloads
+    gnome_packages.sort(key=lambda p: p.monthly_downloads, reverse=True)
+    kde_packages.sort(key=lambda p: p.monthly_downloads, reverse=True)
+    freedesktop_packages.sort(key=lambda p: p.monthly_downloads, reverse=True)
+    
+    logger.info(f"Grouped packages: {len(gnome_packages)} GNOME, {len(kde_packages)} KDE, {len(freedesktop_packages)} Freedesktop, {len(other_packages)} other")
+    
+    # Identify popular packages (top 10 in each runtime group)
+    popular_package_ids = set()
+    
+    # Top 10 GNOME packages
+    for i, package in enumerate(gnome_packages[:10]):
+        popular_package_ids.add(package.flatpak_id)
+        logger.info(f"Popular GNOME app #{i+1}: {package.flatpak_id} ({package.monthly_downloads} downloads/month)")
+    
+    # Top 10 KDE packages
+    for i, package in enumerate(kde_packages[:10]):
+        popular_package_ids.add(package.flatpak_id)
+        logger.info(f"Popular KDE app #{i+1}: {package.flatpak_id} ({package.monthly_downloads} downloads/month)")
+    
+    # Top 10 Freedesktop packages
+    for i, package in enumerate(freedesktop_packages[:10]):
+        popular_package_ids.add(package.flatpak_id)
+        logger.info(f"Popular Freedesktop app #{i+1}: {package.flatpak_id} ({package.monthly_downloads} downloads/month)")
+    
+    logger.info(f"Total popular packages: {len(popular_package_ids)}")
     
     # Initialize issue generator
     generator = IssueGenerator(github_token, repo_name)
@@ -371,9 +412,9 @@ def main():
     
     # Create or update issues for outdated packages
     created_or_updated_count = 0
-    for i, package in enumerate(packages):
-        is_important = i < 10
-        if generator.create_or_update_issue(package, is_important):
+    for package in packages:
+        is_popular = package.flatpak_id in popular_package_ids
+        if generator.create_or_update_issue(package, is_popular):
             created_or_updated_count += 1
     
     logger.info(f"Created or updated {created_or_updated_count} issues for outdated packages")
