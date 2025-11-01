@@ -3,21 +3,28 @@
 ## Overview Statistics
 *(Based on most recent scheduled run: 2025-10-27)*
 
+# Success Rate - 52.5% 
+
 | Metric | Count |
 |--------|-------|
 | **Total Applications Tracked** | 162 |
 | **✅ Up to Date** | 85 |
 | **⏳ Need Updates** | 77 |
-| **Compliance Rate** | 52.5% |
 
 **Target Runtimes:**
-- GNOME Platform: 49
-- KDE Platform: 6.9
-- Freedesktop Platform: 25.08
+- GNOME Platform: 49  [copilot: link to the github issues for this label, ensure the link is future proof since they are versioned.]
+- KDE Platform: 6.9 [copilot: link to the github issues for this label, ensure the link is future proof since they are versioned.]
+- Freedesktop Platform: 25.08 [copilot: link to the github issues for this label, ensure the link is future proof since they are versioned.]
 
 ---
 
-# Historical Updates
+# Purpose
+
+This website is designed to help new contributors find applications in Flathub that need runtime updates. Check the [open issues](https://github.com/ublue-os/flatpak-tracker/issues) and find your favorite app!
+
+This only tracks apps shipping in Aurora, Bazzite, and Bluefin. It also tracks the applications shipping in the [Bazaar](https://github.com/kolunmi/bazaar) curated sections. Our hope is by focusing on a core set of apps shipping to our users that we can help target the most popular applications. Thanks for helping!
+
+# Changelog
 
 Below is a record of all scheduled workflow runs that have checked for runtime updates.
 
