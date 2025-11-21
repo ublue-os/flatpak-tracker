@@ -98,3 +98,11 @@ jobs:
           git commit -m "Update changelog - $(date +'%Y-%m-%d')"
           git push
         fi
+        
+    - name: Trigger Jekyll site deployment
+      run: |
+        echo "🚀 Triggering Jekyll site deployment..."
+        gh workflow run jekyll-gh-pages.yml
+        echo "✅ Jekyll deployment triggered"
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
