@@ -560,12 +560,18 @@ This scheduled workflow run checked {total_tracked} flatpak applications across 
             logger.info("Existing file found - will keep existing historical sections")
             with open(self.output_file, 'r') as f:
                 content = f.read()
-                # Skip Jekyll front matter if present (between --- markers)
+                # Skip Jekyll front matter if present (between --- markers at start of file)
                 if content.startswith('---'):
-                    # Find the end of front matter
-                    end_of_front_matter = content.find('---', 3)
-                    if end_of_front_matter != -1:
-                        content = content[end_of_front_matter + 3:].lstrip()
+                    # Find the closing front matter marker (must be on its own line)
+                    lines = content.split('\n')
+                    front_matter_end = -1
+                    for i, line in enumerate(lines[1:], start=1):  # Start from line 1 (skip opening ---)
+                        if line.strip() == '---':
+                            front_matter_end = i
+                            break
+                    if front_matter_end != -1:
+                        # Join lines after the front matter, skipping the closing ---
+                        content = '\n'.join(lines[front_matter_end + 1:]).lstrip()
                 # Extract everything after the first "## Week of" to preserve historical data
                 if "## Week of" in content:
                     parts = content.split("## Week of", 1)
