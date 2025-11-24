@@ -49,13 +49,20 @@ class HistoricalSnapshot:
 class ChangelogGenerator:
     """Generates markdown changelog from flatpak runtime update data."""
     
-    def __init__(self, github_token: str, repo_name: str, output_file: str = "CHANGELOG.md"):
+    def __init__(self, github_token: str, repo_name: str, output_file: str = "index.md"):
         """Initialize the changelog generator."""
         self.github = Github(github_token)
         self.repo = self.github.get_repo(repo_name)
         self.output_file = output_file
         self.current_date = datetime.now()
         self.github_token = github_token
+        # Jekyll front matter for the index page
+        self.jekyll_front_matter = """---
+layout: default
+title: Home
+---
+
+"""
         
     def fetch_historical_workflow_runs(self, workflow_name: str = "Check Flatpak Runtime Updates") -> List[dict]:
         """Fetch all scheduled workflow runs (not manually triggered) for backfilling."""
@@ -547,12 +554,18 @@ This scheduled workflow run checked {total_tracked} flatpak applications across 
         # Generate changelog section for current week
         current_week_changelog = self.generate_changelog_section(packages, metadata)
         
-        # Check if CHANGELOG.md already exists
+        # Check if output file already exists
         existing_content = ""
         if os.path.exists(self.output_file):
-            logger.info("Existing changelog found - will keep existing historical sections")
+            logger.info("Existing file found - will keep existing historical sections")
             with open(self.output_file, 'r') as f:
                 content = f.read()
+                # Skip Jekyll front matter if present (between --- markers)
+                if content.startswith('---'):
+                    # Find the end of front matter
+                    end_of_front_matter = content.find('---', 3)
+                    if end_of_front_matter != -1:
+                        content = content[end_of_front_matter + 3:].lstrip()
                 # Extract everything after the first "## Week of" to preserve historical data
                 if "## Week of" in content:
                     parts = content.split("## Week of", 1)
@@ -564,8 +577,13 @@ This scheduled workflow run checked {total_tracked} flatpak applications across 
                             # Keep old weeks as historical sections
                             pass
         
-        # Combine: Dashboard + Current Week + Existing Historical (if any)
-        full_changelog = dashboard + current_week_changelog
+        # Combine: Jekyll front matter (if writing to index.md) + Dashboard + Current Week + Existing Historical
+        full_changelog = ""
+        # Check if output file is index.md (either relative or absolute path)
+        output_basename = os.path.basename(self.output_file)
+        if output_basename == 'index.md':
+            full_changelog = self.jekyll_front_matter
+        full_changelog += dashboard + current_week_changelog
         
         if existing_content:
             # Insert existing historical content

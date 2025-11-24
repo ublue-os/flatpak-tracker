@@ -75,10 +75,10 @@ jobs:
     - name: Display changelog preview
       run: |
         echo "## Changelog Preview"
-        if [ -f CHANGELOG.md ]; then
-          head -n 50 CHANGELOG.md
+        if [ -f index.md ]; then
+          head -n 50 index.md
         else
-          echo "❌ CHANGELOG.md was not generated"
+          echo "❌ index.md was not generated"
           exit 1
         fi
         
@@ -87,8 +87,8 @@ jobs:
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
         
-        # Add the changelog
-        git add CHANGELOG.md
+        # Add the index file (Jekyll homepage)
+        git add index.md
         
         # Check if there are changes to commit
         if git diff --cached --quiet; then
