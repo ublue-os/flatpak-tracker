@@ -1,15 +1,15 @@
-*Updated: November 24, 2025 at 11:08 UTC*
+*Updated: December 01, 2025 at 11:07 UTC*
 
 ## Overview Statistics
-*(Based on most recent scheduled run: 2025-11-24)*
+*(Based on most recent scheduled run: 2025-12-01)*
 
-# Success Rate - 53.9% 
+# Success Rate - 57.8% 
 
 | Metric | Count |
 |--------|-------|
-| **Total Applications Tracked** | 191 |
-| **✅ Up to Date** | 103 |
-| **⏳ Need Updates** | 88 |
+| **Total Applications Tracked** | 192 |
+| **✅ Up to Date** | 111 |
+| **⏳ Need Updates** | 81 |
 
 ## Contribution Opportunities by Platform**
 
@@ -29,7 +29,109 @@ This only tracks apps shipping in Aurora, Bazzite, and Bluefin. It also tracks t
 
 Below is a record of all scheduled workflow runs that have checked for runtime updates.
 
-## Week of November 24 - November 30, 2025
+## Week of December 01 - December 07, 2025
+
+**Run Date:** 2025-12-01  
+**Run ID:** [19817107676](https://github.com/ublue-os/flatpak-tracker/actions/runs/19817107676)
+
+| Application Name | Flatpak ID | Current Runtime | Target Runtime |
+|------------------|------------|-----------------|----------------|
+| Warp | [app.drey.Warp](https://github.com/flathub/app.drey.Warp) | `gnome-48` | `gnome-49` |
+| moat | [as.may.moat](https://github.com/flathub/as.may.moat) | `freedesktop-24.08` | `freedesktop-25.08` |
+| BambuStudio | [com.bambulab.BambuStudio](https://github.com/flathub/com.bambulab.BambuStudio) | `gnome-48` | `gnome-49` |
+| Browser | [com.brave.Browser](https://github.com/flathub/com.brave.Browser) | `freedesktop-24.08` | `freedesktop-25.08` |
+| Boatswain | [com.feaneron.Boatswain](https://github.com/flathub/com.feaneron.Boatswain) | `gnome-48` | `gnome-49` |
+| Postman | [com.getpostman.Postman](https://github.com/flathub/com.getpostman.Postman) | `freedesktop-24.08` | `freedesktop-25.08` |
+| Raider | [com.github.ADBeveridge.Raider](https://github.com/flathub/com.github.ADBeveridge.Raider) | `gnome-48` | `gnome-49` |
+| eyedropper | [com.github.finefindus.eyedropper](https://github.com/flathub/com.github.finefindus.eyedropper) | `gnome-48` | `gnome-49` |
+| jellyfin-media-player | [com.github.iwalton3.jellyfin-media-player](https://github.com/flathub/com.github.iwalton3.jellyfin-media-player) | `kde-5.15-24.08` | `kde-6.10` |
+| Pods | [com.github.marhkb.Pods](https://github.com/flathub/com.github.marhkb.Pods) | `gnome-48` | `gnome-49` |
+| SyncThingy | [com.github.zocker_160.SyncThingy](https://github.com/flathub/com.github.zocker_160.SyncThingy) | `kde-5.15-25.08` | `kde-6.10` |
+| Chrome | [com.google.Chrome](https://github.com/flathub/com.google.Chrome) | `freedesktop-24.08` | `freedesktop-25.08` |
+| inochi-session | [com.inochi2d.inochi-session](https://github.com/flathub/com.inochi2d.inochi-session) | `freedesktop-24.08` | `freedesktop-25.08` |
+| Logseq | [com.logseq.Logseq](https://github.com/flathub/com.logseq.Logseq) | `freedesktop-24.08` | `freedesktop-25.08` |
+| ForgeSparks | [com.mardojai.ForgeSparks](https://github.com/flathub/com.mardojai.ForgeSparks) | `gnome-48` | `gnome-49` |
+| tidal-hifi | [com.mastermindzh.tidal-hifi](https://github.com/flathub/com.mastermindzh.tidal-hifi) | `freedesktop-24.08` | `freedesktop-25.08` |
+| Studio | [com.obsproject.Studio](https://github.com/flathub/com.obsproject.Studio) | `kde-6.8` | `kde-6.10` |
+| Opera | [com.opera.Opera](https://github.com/flathub/com.opera.Opera) | `freedesktop-24.08` | `freedesktop-25.08` |
+| ShijimaQt | [com.pixelomer.ShijimaQt](https://github.com/flathub/com.pixelomer.ShijimaQt) | `kde-6.8` | `kde-6.10` |
+| Plexamp | [com.plexamp.Plexamp](https://github.com/flathub/com.plexamp.Plexamp) | `freedesktop-24.08` | `freedesktop-25.08` |
+| Blanket | [com.rafaelmardojai.Blanket](https://github.com/flathub/com.rafaelmardojai.Blanket) | `gnome-48` | `gnome-49` |
+| SuperProductivity | [com.super_productivity.SuperProductivity](https://github.com/flathub/com.super_productivity.SuperProductivity) | `freedesktop-24.08` | `freedesktop-25.08` |
+| Vivaldi | [com.vivaldi.Vivaldi](https://github.com/flathub/com.vivaldi.Vivaldi) | `freedesktop-24.08` | `freedesktop-25.08` |
+| Shortwave | [de.haeckerfelix.Shortwave](https://github.com/flathub/de.haeckerfelix.Shortwave) | `gnome-48` | `gnome-49` |
+| Keypunch | [dev.bragefuglseth.Keypunch](https://github.com/flathub/dev.bragefuglseth.Keypunch) | `gnome-48` | `gnome-49` |
+| cameractrls | [hu.irl.cameractrls](https://github.com/flathub/hu.irl.cameractrls) | `freedesktop-24.08` | `freedesktop-25.08` |
+| Memorado | [im.bernard.Memorado](https://github.com/flathub/im.bernard.Memorado) | `gnome-47` | `gnome-49` |
+| Amberol | [io.bassi.Amberol](https://github.com/flathub/io.bassi.Amberol) | `gnome-48` | `gnome-49` |
+| Kontainer | [io.github.DenysMb.Kontainer](https://github.com/flathub/io.github.DenysMb.Kontainer) | `kde-6.9` | `kde-6.10` |
+| Flashcards | [io.github.david_swift.Flashcards](https://github.com/flathub/io.github.david_swift.Flashcards) | `gnome-46` | `gnome-49` |
+| Ignition | [io.github.flattool.Ignition](https://github.com/flathub/io.github.flattool.Ignition) | `gnome-48` | `gnome-49` |
+| Warehouse | [io.github.flattool.Warehouse](https://github.com/flathub/io.github.flattool.Warehouse) | `gnome-48` | `gnome-49` |
+| sdl_sopwith | [io.github.fragglet.sdl_sopwith](https://github.com/flathub/io.github.fragglet.sdl_sopwith) | `freedesktop-24.08` | `freedesktop-25.08` |
+| embellish | [io.github.getnf.embellish](https://github.com/flathub/io.github.getnf.embellish) | `gnome-48` | `gnome-49` |
+| Mingle | [io.github.halfmexican.Mingle](https://github.com/flathub/io.github.halfmexican.Mingle) | `gnome-48` | `gnome-49` |
+| Egghead | [io.github.josephmawa.Egghead](https://github.com/flathub/io.github.josephmawa.Egghead) | `gnome-48` | `gnome-49` |
+| Kasasa | [io.github.kelvinnovais.Kasasa](https://github.com/flathub/io.github.kelvinnovais.Kasasa) | `gnome-48` | `gnome-49` |
+| Echo | [io.github.lo2dev.Echo](https://github.com/flathub/io.github.lo2dev.Echo) | `gnome-48` | `gnome-49` |
+| media-downloader | [io.github.mhogomchungu.media-downloader](https://github.com/flathub/io.github.mhogomchungu.media-downloader) | `kde-6.9` | `kde-6.10` |
+| Exhibit | [io.github.nokse22.Exhibit](https://github.com/flathub/io.github.nokse22.Exhibit) | `gnome-48` | `gnome-49` |
+| Packet | [io.github.nozwock.Packet](https://github.com/flathub/io.github.nozwock.Packet) | `gnome-48` | `gnome-49` |
+| IceBox | [io.github.pleromix.IceBox](https://github.com/flathub/io.github.pleromix.IceBox) | `freedesktop-24.08` | `freedesktop-25.08` |
+| mangojuice | [io.github.radiolamp.mangojuice](https://github.com/flathub/io.github.radiolamp.mangojuice) | `gnome-48` | `gnome-49` |
+| concessio | [io.github.ronniedroid.concessio](https://github.com/flathub/io.github.ronniedroid.concessio) | `gnome-48` | `gnome-49` |
+| Sudoku | [io.github.sepehr_rs.Sudoku](https://github.com/flathub/io.github.sepehr_rs.Sudoku) | `gnome-48` | `gnome-49` |
+| rewaita | [io.github.swordpuffin.rewaita](https://github.com/flathub/io.github.swordpuffin.rewaita) | `gnome-48` | `gnome-49` |
+| Headlamp | [io.kinvolk.Headlamp](https://github.com/flathub/io.kinvolk.Headlamp) | `freedesktop-24.08` | `freedesktop-25.08` |
+| devtoolbox | [me.iepure.devtoolbox](https://github.com/flathub/me.iepure.devtoolbox) | `gnome-48` | `gnome-49` |
+| jdsp4linux | [me.timschneeberger.jdsp4linux](https://github.com/flathub/me.timschneeberger.jdsp4linux) | `kde-6.8` | `kde-6.10` |
+| pupgui2 | [net.davidotek.pupgui2](https://github.com/flathub/net.davidotek.pupgui2) | `kde-6.9` | `kde-6.10` |
+| Lutris | [net.lutris.Lutris](https://github.com/flathub/net.lutris.Lutris) | `gnome-46` | `gnome-49` |
+| nottetris2 | [net.stabyourself.nottetris2](https://github.com/flathub/net.stabyourself.nottetris2) | `freedesktop-23.08` | `freedesktop-25.08` |
+| SuperTuxKart | [net.supertuxkart.SuperTuxKart](https://github.com/flathub/net.supertuxkart.SuperTuxKart) | `freedesktop-24.08` | `freedesktop-25.08` |
+| Tuner | [org.altlinux.Tuner](https://github.com/flathub/org.altlinux.Tuner) | `gnome-48` | `gnome-49` |
+| Blender | [org.blender.Blender](https://github.com/flathub/org.blender.Blender) | `freedesktop-24.08` | `freedesktop-25.08` |
+| CockpitClient | [org.cockpit_project.CockpitClient](https://github.com/flathub/org.cockpit_project.CockpitClient) | `gnome-48` | `gnome-49` |
+| Key | [org.endlessos.Key](https://github.com/flathub/org.endlessos.Key) | `gnome-45` | `gnome-49` |
+| MediaWriter | [org.fedoraproject.MediaWriter](https://github.com/flathub/org.fedoraproject.MediaWriter) | `kde-6.9` | `kde-6.10` |
+| KTailctl | [org.fkoehler.KTailctl](https://github.com/flathub/org.fkoehler.KTailctl) | `kde-6.9` | `kde-6.10` |
+| gitfourchette | [org.gitfourchette.gitfourchette](https://github.com/flathub/org.gitfourchette.gitfourchette) | `kde-6.9` | `kde-6.10` |
+| VideoTrimmer | [org.gnome.gitlab.YaLTeR.VideoTrimmer](https://github.com/flathub/org.gnome.gitlab.YaLTeR.VideoTrimmer) | `gnome-48` | `gnome-49` |
+| Inkscape | [org.inkscape.Inkscape](https://github.com/flathub/org.inkscape.Inkscape) | `gnome-48` | `gnome-49` |
+| arianna | [org.kde.arianna](https://github.com/flathub/org.kde.arianna) | `kde-6.9` | `kde-6.10` |
+| kcalc | [org.kde.kcalc](https://github.com/flathub/org.kde.kcalc) | `kde-6.9` | `kde-6.10` |
+| kdenlive | [org.kde.kdenlive](https://github.com/flathub/org.kde.kdenlive) | `kde-6.9` | `kde-6.10` |
+| kontact | [org.kde.kontact](https://github.com/flathub/org.kde.kontact) | `kde-6.9` | `kde-6.10` |
+| kstars | [org.kde.kstars](https://github.com/flathub/org.kde.kstars) | `kde-6.9` | `kde-6.10` |
+| optiimage | [org.kde.optiimage](https://github.com/flathub/org.kde.optiimage) | `kde-6.9` | `kde-6.10` |
+| skanpage | [org.kde.skanpage](https://github.com/flathub/org.kde.skanpage) | `kde-6.9` | `kde-6.10` |
+| KeePassXC | [org.keepassxc.KeePassXC](https://github.com/flathub/org.keepassxc.KeePassXC) | `kde-5.15-25.08` | `kde-6.10` |
+| Thunderbird | [org.mozilla.Thunderbird](https://github.com/flathub/org.mozilla.Thunderbird) | `freedesktop-24.08` | `freedesktop-25.08` |
+| firefox | [org.mozilla.firefox](https://github.com/flathub/org.mozilla.firefox) | `freedesktop-24.08` | `freedesktop-25.08` |
+| vpn | [org.mozilla.vpn](https://github.com/flathub/org.mozilla.vpn) | `kde-6.9` | `kde-6.10` |
+| desktopeditors | [org.onlyoffice.desktopeditors](https://github.com/flathub/org.onlyoffice.desktopeditors) | `freedesktop-24.08` | `freedesktop-25.08` |
+| PrismLauncher | [org.prismlauncher.PrismLauncher](https://github.com/flathub/org.prismlauncher.PrismLauncher) | `kde-6.9` | `kde-6.10` |
+| rpi-imager | [org.raspberrypi.rpi-imager](https://github.com/flathub/org.raspberrypi.rpi-imager) | `kde-6.9` | `kde-6.10` |
+| Tuxpaint | [org.tuxpaint.Tuxpaint](https://github.com/flathub/org.tuxpaint.Tuxpaint) | `freedesktop-24.08` | `freedesktop-25.08` |
+| VLC | [org.videolan.VLC](https://github.com/flathub/org.videolan.VLC) | `kde-5.15-24.08` | `kde-6.10` |
+| Wesnoth | [org.wesnoth.Wesnoth](https://github.com/flathub/org.wesnoth.Wesnoth) | `freedesktop-24.08` | `freedesktop-25.08` |
+| VacuumTube | [rocks.shy.VacuumTube](https://github.com/flathub/rocks.shy.VacuumTube) | `freedesktop-24.08` | `freedesktop-25.08` |
+| PlexDesktop | [tv.plex.PlexDesktop](https://github.com/flathub/tv.plex.PlexDesktop) | `freedesktop-23.08` | `freedesktop-25.08` |
+
+
+### Stats
+- **Total**: 192
+- **Up to Date:** 111
+- **Need Updates:** 81
+- **Success Rate:** 57.8%
+
+### Summary
+This scheduled workflow run checked 192 flatpak applications across all ublue-os sources. 81 applications were found with outdated runtimes and issues were created or updated for each.
+
+---
+
+
+## Week of  November 24 - November 30, 2025
 
 **Run Date:** 2025-11-24  
 **Run ID:** [19628806924](https://github.com/ublue-os/flatpak-tracker/actions/runs/19628806924)
@@ -892,6 +994,10 @@ The Flatpak Runtime Tracker:
 ## Contributing
 
 Help keep applications up to date! Check the [open issues](https://github.com/ublue-os/flatpak-tracker/issues?q=is%3Aissue+is%3Aopen) for applications that need runtime updates.
+
+---
+
+*This changelog is automatically maintained and updated with each scheduled workflow run.*
 
 ---
 
