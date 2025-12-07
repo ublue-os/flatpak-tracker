@@ -422,8 +422,10 @@ Below is a record of all scheduled workflow runs that have checked for runtime u
         return dashboard
     
     def generate_changelog_section(self, packages: List[OutdatedPackage],
-                                   metadata: dict) -> str:
-        """Generate the weekly changelog section with table format."""
+                                   all_tracked: List[str],
+                                   metadata: dict,
+                                   previous_snapshot: Optional[HistoricalSnapshot] = None) -> str:
+        """Generate the weekly changelog section with diff format."""
         
         # Get week range
         start_of_week = self.current_date - timedelta(days=self.current_date.weekday())
@@ -458,15 +460,86 @@ Below is a record of all scheduled workflow runs that have checked for runtime u
 **Run Date:** {run_date}  
 **Run ID:** {run_id_link}
 
-{self.generate_application_table(packages)}
-### Stats
+"""
+        
+        if previous_snapshot:
+            current_snapshot = HistoricalSnapshot(
+                run_date=self.current_date,
+                run_id=0,
+                outdated_packages=set(p.flatpak_id for p in packages),
+                all_tracked_packages=set(all_tracked),
+                total_checked=len(all_tracked),
+                outdated_count=len(packages)
+            )
+            
+            # Calculate diffs
+            # updated = old_outdated - new_outdated (Fixed)
+            updated = previous_snapshot.outdated_packages - current_snapshot.outdated_packages
+            
+            # regressed = new_outdated - old_outdated (Newly Outdated)
+            regressed = current_snapshot.outdated_packages - previous_snapshot.outdated_packages
+            
+            # added = new_tracked - old_tracked (Added to Tracking)
+            added = current_snapshot.all_tracked_packages - previous_snapshot.all_tracked_packages
+            
+            # removed = old_tracked - new_tracked (Removed from Tracking)
+            removed = previous_snapshot.all_tracked_packages - current_snapshot.all_tracked_packages
+            
+            has_changes = False
+            
+            if updated:
+                has_changes = True
+                changelog += f"### 🚀 Fixed / Updated Upstream ({len(updated)})\n\n"
+                for fid in sorted(updated):
+                    app_name = fid.replace('app/', '').split('.')[-1]
+                    changelog += f"- ✅ **{app_name}** (`{fid}`)\n"
+                changelog += "\n"
+                
+            if regressed:
+                has_changes = True
+                changelog += f"### ⚠️ Newly Outdated ({len(regressed)})\n\n"
+                for fid in sorted(regressed):
+                    app_name = fid.replace('app/', '').split('.')[-1]
+                    pkg = next((p for p in packages if p.flatpak_id == fid), None)
+                    if pkg:
+                        current_label = self.format_runtime_as_label(pkg.current_runtime, pkg.current_version)
+                        target_label = self.format_runtime_as_label(pkg.latest_runtime, pkg.latest_version)
+                        changelog += f"- ⚠️ **{app_name}** (`{fid}`): {current_label} → {target_label}\n"
+                    else:
+                        changelog += f"- ⚠️ **{app_name}** (`{fid}`)\n"
+                changelog += "\n"
+            
+            if added:
+                has_changes = True
+                changelog += f"### 📦 Added to Tracking ({len(added)})\n\n"
+                for fid in sorted(added):
+                    app_name = fid.replace('app/', '').split('.')[-1]
+                    changelog += f"- 🆕 **{app_name}** (`{fid}`)\n"
+                changelog += "\n"
+                
+            if removed:
+                has_changes = True
+                changelog += f"### 🗑️ Removed from Tracking ({len(removed)})\n\n"
+                for fid in sorted(removed):
+                    app_name = fid.replace('app/', '').split('.')[-1]
+                    changelog += f"- ❌ **{app_name}** (`{fid}`)\n"
+                changelog += "\n"
+                
+            if not has_changes:
+                changelog += "No changes in this run.\n\n"
+                
+        else:
+            # Fallback to table if no previous snapshot
+            changelog += self.generate_application_table(packages)
+            
+        changelog += f"""### Stats
 - **Total**: {total_tracked}
 - **Up to Date:** {up_to_date}
 - **Need Updates:** {outdated_count}
 - **Success Rate:** {success_rate:.1f}%
 
 ### Summary
-This scheduled workflow run checked {total_tracked} flatpak applications across all ublue-os sources. {outdated_count} applications were found with outdated runtimes and issues were created or updated for each.
+This scheduled workflow run checked {total_tracked} flatpak applications across all ublue-os sources. {outdated_count} applications were found with outdated runtimes.
 
 ---
 
@@ -548,11 +621,35 @@ This scheduled workflow run checked {total_tracked} flatpak applications across 
         
         logger.info(f"Found {len(packages)} outdated packages, {len(all_tracked)} total tracked")
         
+        # Fetch previous snapshot for diff generation
+        previous_snapshot = None
+        try:
+            # Get historical runs
+            runs = self.fetch_historical_workflow_runs()
+            if runs:
+                # The first one is the latest completed run
+                latest_run = runs[0]
+                logger.info(f"Fetching previous data from run {latest_run['id']} ({latest_run['created_at']})")
+                prev_data = self.download_artifact_data(latest_run['id'])
+                
+                if prev_data:
+                    previous_snapshot = HistoricalSnapshot(
+                        run_date=latest_run['created_at'],
+                        run_id=latest_run['id'],
+                        outdated_packages=set(p['flatpak_id'] for p in prev_data.get('outdated_packages', [])),
+                        all_tracked_packages=set(prev_data.get('all_tracked_packages', [])),
+                        total_checked=prev_data.get('total_checked', 0),
+                        outdated_count=prev_data.get('outdated_count', 0)
+                    )
+                    logger.info(f"Loaded previous snapshot: {len(previous_snapshot.outdated_packages)} outdated packages")
+        except Exception as e:
+            logger.warning(f"Failed to fetch previous snapshot: {e}")
+        
         # Generate dashboard section
         dashboard = self.generate_dashboard_section(packages, all_tracked, metadata)
         
         # Generate changelog section for current week
-        current_week_changelog = self.generate_changelog_section(packages, metadata)
+        current_week_changelog = self.generate_changelog_section(packages, all_tracked, metadata, previous_snapshot)
         
         # Check if output file already exists
         existing_content = ""
