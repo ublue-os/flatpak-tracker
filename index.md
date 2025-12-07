@@ -3,18 +3,18 @@ layout: default
 title: Home
 ---
 
-*Updated: December 01, 2025 at 11:07 UTC*
+*Updated: December 07, 2025 at 14:32 UTC*
 
 ## Overview Statistics
-*(Based on most recent scheduled run: 2025-12-01)*
+*(Based on most recent scheduled run: 2025-12-07)*
 
-# Success Rate - 57.8% 
+# Success Rate - 85.7% 
 
 | Metric | Count |
 |--------|-------|
-| **Total Applications Tracked** | 192 |
-| **✅ Up to Date** | 111 |
-| **⏳ Need Updates** | 81 |
+| **Total Applications Tracked** | 42 |
+| **✅ Up to Date** | 36 |
+| **⏳ Need Updates** | 6 |
 
 ## Contribution Opportunities by Platform**
 
@@ -35,6 +35,254 @@ This only tracks apps shipping in Aurora, Bazzite, and Bluefin. It also tracks t
 Below is a record of all scheduled workflow runs that have checked for runtime updates.
 
 ## Week of December 01 - December 07, 2025
+
+**Run Date:** 2025-12-01  
+**Run ID:** [19817107676](https://github.com/ublue-os/flatpak-tracker/actions/runs/19817107676)
+
+### 🚀 Fixed / Updated Upstream (75)
+
+- ✅ **Warp** (`app/app.drey.Warp`)
+- ✅ **moat** (`app/as.may.moat`)
+- ✅ **BambuStudio** (`app/com.bambulab.BambuStudio`)
+- ✅ **Browser** (`app/com.brave.Browser`)
+- ✅ **Boatswain** (`app/com.feaneron.Boatswain`)
+- ✅ **Postman** (`app/com.getpostman.Postman`)
+- ✅ **Raider** (`app/com.github.ADBeveridge.Raider`)
+- ✅ **eyedropper** (`app/com.github.finefindus.eyedropper`)
+- ✅ **jellyfin-media-player** (`app/com.github.iwalton3.jellyfin-media-player`)
+- ✅ **Pods** (`app/com.github.marhkb.Pods`)
+- ✅ **SyncThingy** (`app/com.github.zocker_160.SyncThingy`)
+- ✅ **Chrome** (`app/com.google.Chrome`)
+- ✅ **inochi-session** (`app/com.inochi2d.inochi-session`)
+- ✅ **Logseq** (`app/com.logseq.Logseq`)
+- ✅ **ForgeSparks** (`app/com.mardojai.ForgeSparks`)
+- ✅ **tidal-hifi** (`app/com.mastermindzh.tidal-hifi`)
+- ✅ **Studio** (`app/com.obsproject.Studio`)
+- ✅ **Opera** (`app/com.opera.Opera`)
+- ✅ **ShijimaQt** (`app/com.pixelomer.ShijimaQt`)
+- ✅ **Plexamp** (`app/com.plexamp.Plexamp`)
+- ✅ **Blanket** (`app/com.rafaelmardojai.Blanket`)
+- ✅ **SuperProductivity** (`app/com.super_productivity.SuperProductivity`)
+- ✅ **Vivaldi** (`app/com.vivaldi.Vivaldi`)
+- ✅ **Shortwave** (`app/de.haeckerfelix.Shortwave`)
+- ✅ **Keypunch** (`app/dev.bragefuglseth.Keypunch`)
+- ✅ **cameractrls** (`app/hu.irl.cameractrls`)
+- ✅ **Memorado** (`app/im.bernard.Memorado`)
+- ✅ **Amberol** (`app/io.bassi.Amberol`)
+- ✅ **Kontainer** (`app/io.github.DenysMb.Kontainer`)
+- ✅ **Flashcards** (`app/io.github.david_swift.Flashcards`)
+- ✅ **sdl_sopwith** (`app/io.github.fragglet.sdl_sopwith`)
+- ✅ **embellish** (`app/io.github.getnf.embellish`)
+- ✅ **Mingle** (`app/io.github.halfmexican.Mingle`)
+- ✅ **Egghead** (`app/io.github.josephmawa.Egghead`)
+- ✅ **Kasasa** (`app/io.github.kelvinnovais.Kasasa`)
+- ✅ **Echo** (`app/io.github.lo2dev.Echo`)
+- ✅ **media-downloader** (`app/io.github.mhogomchungu.media-downloader`)
+- ✅ **Exhibit** (`app/io.github.nokse22.Exhibit`)
+- ✅ **Packet** (`app/io.github.nozwock.Packet`)
+- ✅ **IceBox** (`app/io.github.pleromix.IceBox`)
+- ✅ **mangojuice** (`app/io.github.radiolamp.mangojuice`)
+- ✅ **concessio** (`app/io.github.ronniedroid.concessio`)
+- ✅ **Sudoku** (`app/io.github.sepehr_rs.Sudoku`)
+- ✅ **rewaita** (`app/io.github.swordpuffin.rewaita`)
+- ✅ **Headlamp** (`app/io.kinvolk.Headlamp`)
+- ✅ **devtoolbox** (`app/me.iepure.devtoolbox`)
+- ✅ **jdsp4linux** (`app/me.timschneeberger.jdsp4linux`)
+- ✅ **pupgui2** (`app/net.davidotek.pupgui2`)
+- ✅ **Lutris** (`app/net.lutris.Lutris`)
+- ✅ **nottetris2** (`app/net.stabyourself.nottetris2`)
+- ✅ **SuperTuxKart** (`app/net.supertuxkart.SuperTuxKart`)
+- ✅ **Blender** (`app/org.blender.Blender`)
+- ✅ **CockpitClient** (`app/org.cockpit_project.CockpitClient`)
+- ✅ **Key** (`app/org.endlessos.Key`)
+- ✅ **MediaWriter** (`app/org.fedoraproject.MediaWriter`)
+- ✅ **KTailctl** (`app/org.fkoehler.KTailctl`)
+- ✅ **gitfourchette** (`app/org.gitfourchette.gitfourchette`)
+- ✅ **VideoTrimmer** (`app/org.gnome.gitlab.YaLTeR.VideoTrimmer`)
+- ✅ **Inkscape** (`app/org.inkscape.Inkscape`)
+- ✅ **arianna** (`app/org.kde.arianna`)
+- ✅ **kdenlive** (`app/org.kde.kdenlive`)
+- ✅ **kontact** (`app/org.kde.kontact`)
+- ✅ **kstars** (`app/org.kde.kstars`)
+- ✅ **optiimage** (`app/org.kde.optiimage`)
+- ✅ **skanpage** (`app/org.kde.skanpage`)
+- ✅ **KeePassXC** (`app/org.keepassxc.KeePassXC`)
+- ✅ **vpn** (`app/org.mozilla.vpn`)
+- ✅ **desktopeditors** (`app/org.onlyoffice.desktopeditors`)
+- ✅ **PrismLauncher** (`app/org.prismlauncher.PrismLauncher`)
+- ✅ **rpi-imager** (`app/org.raspberrypi.rpi-imager`)
+- ✅ **Tuxpaint** (`app/org.tuxpaint.Tuxpaint`)
+- ✅ **VLC** (`app/org.videolan.VLC`)
+- ✅ **Wesnoth** (`app/org.wesnoth.Wesnoth`)
+- ✅ **VacuumTube** (`app/rocks.shy.VacuumTube`)
+- ✅ **PlexDesktop** (`app/tv.plex.PlexDesktop`)
+
+### 🗑️ Removed from Tracking (150)
+
+- ❌ **Damask** (`app/app.drey.Damask`)
+- ❌ **Elastic** (`app/app.drey.Elastic`)
+- ❌ **Warp** (`app/app.drey.Warp`)
+- ❌ **Fotema** (`app/app.fotema.Fotema`)
+- ❌ **ytmdesktop** (`app/app.ytmdesktop.ytmdesktop`)
+- ❌ **moat** (`app/as.may.moat`)
+- ❌ **yafi** (`app/au.stevetech.yafi`)
+- ❌ **gradia** (`app/be.alexandervanhee.gradia`)
+- ❌ **IDE2** (`app/cc.arduino.IDE2`)
+- ❌ **BambuStudio** (`app/com.bambulab.BambuStudio`)
+- ❌ **Decoder** (`app/com.belmoussaoui.Decoder`)
+- ❌ **Browser** (`app/com.brave.Browser`)
+- ❌ **gpu_screen_recorder** (`app/com.dec05eba.gpu_screen_recorder`)
+- ❌ **Discord** (`app/com.discordapp.Discord`)
+- ❌ **Boatswain** (`app/com.feaneron.Boatswain`)
+- ❌ **Postman** (`app/com.getpostman.Postman`)
+- ❌ **Raider** (`app/com.github.ADBeveridge.Raider`)
+- ❌ **teams_for_linux** (`app/com.github.IsmaelMartinez.teams_for_linux`)
+- ❌ **eyedropper** (`app/com.github.finefindus.eyedropper`)
+- ❌ **jellyfin-media-player** (`app/com.github.iwalton3.jellyfin-media-player`)
+- ❌ **spacecadetpinball** (`app/com.github.k4zmu2a.spacecadetpinball`)
+- ❌ **drawing** (`app/com.github.maoschanz.drawing`)
+- ❌ **Pods** (`app/com.github.marhkb.Pods`)
+- ❌ **easyeffects** (`app/com.github.wwmm.easyeffects`)
+- ❌ **SyncThingy** (`app/com.github.zocker_160.SyncThingy`)
+- ❌ **Chrome** (`app/com.google.Chrome`)
+- ❌ **hgl** (`app/com.heroicgameslauncher.hgl`)
+- ❌ **infinipaint** (`app/com.infinipaint.infinipaint`)
+- ❌ **inochi-session** (`app/com.inochi2d.inochi-session`)
+- ❌ **Alpaca** (`app/com.jeffser.Alpaca`)
+- ❌ **Pigment** (`app/com.jeffser.Pigment`)
+- ❌ **Logseq** (`app/com.logseq.Logseq`)
+- ❌ **ForgeSparks** (`app/com.mardojai.ForgeSparks`)
+- ❌ **tidal-hifi** (`app/com.mastermindzh.tidal-hifi`)
+- ❌ **Edge** (`app/com.microsoft.Edge`)
+- ❌ **Studio** (`app/com.obsproject.Studio`)
+- ❌ **Opera** (`app/com.opera.Opera`)
+- ❌ **parsec** (`app/com.parsecgaming.parsec`)
+- ❌ **ShijimaQt** (`app/com.pixelomer.ShijimaQt`)
+- ❌ **Plexamp** (`app/com.plexamp.Plexamp`)
+- ❌ **Blanket** (`app/com.rafaelmardojai.Blanket`)
+- ❌ **Slack** (`app/com.slack.Slack`)
+- ❌ **Client** (`app/com.spotify.Client`)
+- ❌ **SuperProductivity** (`app/com.super_productivity.SuperProductivity`)
+- ❌ **Steam** (`app/com.valvesoftware.Steam`)
+- ❌ **SteamLink** (`app/com.valvesoftware.SteamLink`)
+- ❌ **Vivaldi** (`app/com.vivaldi.Vivaldi`)
+- ❌ **Shortwave** (`app/de.haeckerfelix.Shortwave`)
+- ❌ **Clapgrep** (`app/de.leopoldluley.Clapgrep`)
+- ❌ **DieBahn** (`app/de.schmidhuberj.DieBahn`)
+- ❌ **Keypunch** (`app/dev.bragefuglseth.Keypunch`)
+- ❌ **Calligraphy** (`app/dev.geopjr.Calligraphy`)
+- ❌ **Collision** (`app/dev.geopjr.Collision`)
+- ❌ **cameractrls** (`app/hu.irl.cameractrls`)
+- ❌ **Memorado** (`app/im.bernard.Memorado`)
+- ❌ **Amberol** (`app/io.bassi.Amberol`)
+- ❌ **DBeaverCommunity** (`app/io.dbeaver.DBeaverCommunity`)
+- ❌ **SSH-Studio** (`app/io.github.BuddySirJava.SSH-Studio`)
+- ❌ **Kontainer** (`app/io.github.DenysMb.Kontainer`)
+- ❌ **faugus-launcher** (`app/io.github.Faugus.faugus-launcher`)
+- ❌ **planify** (`app/io.github.alainm23.planify`)
+- ❌ **Flashcards** (`app/io.github.david_swift.Flashcards`)
+- ❌ **sdl_sopwith** (`app/io.github.fragglet.sdl_sopwith`)
+- ❌ **embellish** (`app/io.github.getnf.embellish`)
+- ❌ **Mingle** (`app/io.github.halfmexican.Mingle`)
+- ❌ **Egghead** (`app/io.github.josephmawa.Egghead`)
+- ❌ **Kasasa** (`app/io.github.kelvinnovais.Kasasa`)
+- ❌ **Echo** (`app/io.github.lo2dev.Echo`)
+- ❌ **sshpilot** (`app/io.github.mfat.sshpilot`)
+- ❌ **media-downloader** (`app/io.github.mhogomchungu.media-downloader`)
+- ❌ **Exhibit** (`app/io.github.nokse22.Exhibit`)
+- ❌ **asciidraw** (`app/io.github.nokse22.asciidraw`)
+- ❌ **Packet** (`app/io.github.nozwock.Packet`)
+- ❌ **IceBox** (`app/io.github.pleromix.IceBox`)
+- ❌ **sysd-manager** (`app/io.github.plrigaux.sysd-manager`)
+- ❌ **solaar** (`app/io.github.pwr_solaar.solaar`)
+- ❌ **Newelle** (`app/io.github.qwersyk.Newelle`)
+- ❌ **mangojuice** (`app/io.github.radiolamp.mangojuice`)
+- ❌ **concessio** (`app/io.github.ronniedroid.concessio`)
+- ❌ **Sudoku** (`app/io.github.sepehr_rs.Sudoku`)
+- ❌ **rewaita** (`app/io.github.swordpuffin.rewaita`)
+- ❌ **digger** (`app/io.github.tobagin.digger`)
+- ❌ **SaveDesktop** (`app/io.github.vikdevelop.SaveDesktop`)
+- ❌ **Constrict** (`app/io.github.wartybix.Constrict`)
+- ❌ **Converter** (`app/io.gitlab.adhami3310.Converter`)
+- ❌ **Upscaler** (`app/io.gitlab.theevilskeleton.Upscaler`)
+- ❌ **Headlamp** (`app/io.kinvolk.Headlamp`)
+- ❌ **PodmanDesktop** (`app/io.podman_desktop.PodmanDesktop`)
+- ❌ **Obsidian** (`app/md.obsidian.Obsidian`)
+- ❌ **devtoolbox** (`app/me.iepure.devtoolbox`)
+- ❌ **jdsp4linux** (`app/me.timschneeberger.jdsp4linux`)
+- ❌ **letters** (`app/net.codelogistics.letters`)
+- ❌ **pupgui2** (`app/net.davidotek.pupgui2`)
+- ❌ **Lutris** (`app/net.lutris.Lutris`)
+- ❌ **nottetris2** (`app/net.stabyourself.nottetris2`)
+- ❌ **SuperTuxKart** (`app/net.supertuxkart.SuperTuxKart`)
+- ❌ **Ardour** (`app/org.ardour.Ardour`)
+- ❌ **Audacity** (`app/org.audacityteam.Audacity`)
+- ❌ **Blender** (`app/org.blender.Blender`)
+- ❌ **CockpitClient** (`app/org.cockpit_project.CockpitClient`)
+- ❌ **Darktable** (`app/org.darktable.Darktable`)
+- ❌ **deskflow** (`app/org.deskflow.deskflow`)
+- ❌ **threadbare** (`app/org.endlessaccess.threadbare`)
+- ❌ **Key** (`app/org.endlessos.Key`)
+- ❌ **MediaWriter** (`app/org.fedoraproject.MediaWriter`)
+- ❌ **KTailctl** (`app/org.fkoehler.KTailctl`)
+- ❌ **GIMP** (`app/org.gimp.GIMP`)
+- ❌ **gitfourchette** (`app/org.gitfourchette.gitfourchette`)
+- ❌ **Builder** (`app/org.gnome.Builder`)
+- ❌ **Fractal** (`app/org.gnome.Fractal`)
+- ❌ **Mahjongg** (`app/org.gnome.Mahjongg`)
+- ❌ **PikaBackup** (`app/org.gnome.World.PikaBackup`)
+- ❌ **IconLibrary** (`app/org.gnome.design.IconLibrary`)
+- ❌ **Identity** (`app/org.gnome.gitlab.YaLTeR.Identity`)
+- ❌ **VideoTrimmer** (`app/org.gnome.gitlab.YaLTeR.VideoTrimmer`)
+- ❌ **Buffer** (`app/org.gnome.gitlab.cheywood.Buffer`)
+- ❌ **Pulp** (`app/org.gnome.gitlab.cheywood.Pulp`)
+- ❌ **Apostrophe** (`app/org.gnome.gitlab.somas.Apostrophe`)
+- ❌ **Breeze** (`app/org.gtk.Gtk3theme.Breeze`)
+- ❌ **Inkscape** (`app/org.inkscape.Inkscape`)
+- ❌ **arianna** (`app/org.kde.arianna`)
+- ❌ **audiotube** (`app/org.kde.audiotube`)
+- ❌ **elisa** (`app/org.kde.elisa`)
+- ❌ **kasts** (`app/org.kde.kasts`)
+- ❌ **kclock** (`app/org.kde.kclock`)
+- ❌ **kdenlive** (`app/org.kde.kdenlive`)
+- ❌ **kdevelop** (`app/org.kde.kdevelop`)
+- ❌ **kontact** (`app/org.kde.kontact`)
+- ❌ **krita** (`app/org.kde.krita`)
+- ❌ **kstars** (`app/org.kde.kstars`)
+- ❌ **kweather** (`app/org.kde.kweather`)
+- ❌ **optiimage** (`app/org.kde.optiimage`)
+- ❌ **skanpage** (`app/org.kde.skanpage`)
+- ❌ **KeePassXC** (`app/org.keepassxc.KeePassXC`)
+- ❌ **LibreOffice** (`app/org.libreoffice.LibreOffice`)
+- ❌ **localsend_app** (`app/org.localsend.localsend_app`)
+- ❌ **vpn** (`app/org.mozilla.vpn`)
+- ❌ **desktopeditors** (`app/org.onlyoffice.desktopeditors`)
+- ❌ **PrismLauncher** (`app/org.prismlauncher.PrismLauncher`)
+- ❌ **rpi-imager** (`app/org.raspberrypi.rpi-imager`)
+- ❌ **TurboWarp** (`app/org.turbowarp.TurboWarp`)
+- ❌ **Tuxpaint** (`app/org.tuxpaint.Tuxpaint`)
+- ❌ **VLC** (`app/org.videolan.VLC`)
+- ❌ **Sober** (`app/org.vinegarhq.Sober`)
+- ❌ **Wesnoth** (`app/org.wesnoth.Wesnoth`)
+- ❌ **LibreMenuEditor** (`app/page.codeberg.libre_menu_editor.LibreMenuEditor`)
+- ❌ **Nucleus** (`app/page.codeberg.lo_vely.Nucleus`)
+- ❌ **Eloquent** (`app/re.sonny.Eloquent`)
+- ❌ **VacuumTube** (`app/rocks.shy.VacuumTube`)
+- ❌ **PlexDesktop** (`app/tv.plex.PlexDesktop`)
+
+### Stats
+- **Total**: 42
+- **Up to Date:** 36
+- **Need Updates:** 6
+- **Success Rate:** 85.7%
+
+### Summary
+This scheduled workflow run checked 42 flatpak applications across all ublue-os sources. 6 applications were found with outdated runtimes.
+
+---
+
+
+## Week of  December 01 - December 07, 2025
 
 **Run Date:** 2025-12-01  
 **Run ID:** [19817107676](https://github.com/ublue-os/flatpak-tracker/actions/runs/19817107676)
@@ -999,6 +1247,10 @@ The Flatpak Runtime Tracker:
 ## Contributing
 
 Help keep applications up to date! Check the [open issues](https://github.com/ublue-os/flatpak-tracker/issues?q=is%3Aissue+is%3Aopen) for applications that need runtime updates.
+
+---
+
+*This changelog is automatically maintained and updated with each scheduled workflow run.*
 
 ---
 
