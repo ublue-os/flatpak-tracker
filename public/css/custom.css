@@ -1,0 +1,7 @@
+table {
+    /* Allow table to overflow and users to scroll on small screens */
+    @media (max-width: 1280px) {
+        overflow-x: auto;
+        display: block;
+    }
+}
