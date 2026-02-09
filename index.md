@@ -3,10 +3,10 @@ layout: default
 title: Home
 ---
 
-*Updated: February 02, 2026 at 11:18 UTC*
+*Updated: February 09, 2026 at 11:21 UTC*
 
 ## Overview Statistics
-*(Based on most recent scheduled run: 2026-02-02)*
+*(Based on most recent scheduled run: 2026-02-09)*
 
 # Success Rate - 92.9% 
 
@@ -34,7 +34,26 @@ This only tracks apps shipping in Aurora, Bazzite, and Bluefin. It also tracks t
 
 Below is a record of all scheduled workflow runs that have checked for runtime updates.
 
-## Week of February 02 - February 08, 2026
+## Week of February 09 - February 15, 2026
+
+**Run Date:** 2026-02-09  
+**Run ID:** [21819207475](https://github.com/ublue-os/flatpak-tracker/actions/runs/21819207475)
+
+No changes in this run.
+
+### Stats
+- **Total**: 28
+- **Up to Date:** 26
+- **Need Updates:** 2
+- **Success Rate:** 92.9%
+
+### Summary
+This scheduled workflow run checked 28 flatpak applications across all ublue-os sources. 2 applications were found with outdated runtimes.
+
+---
+
+
+## Week of  February 02 - February 08, 2026
 
 **Run Date:** 2026-02-02  
 **Run ID:** [21584139050](https://github.com/ublue-os/flatpak-tracker/actions/runs/21584139050)
@@ -1418,6 +1437,10 @@ The Flatpak Runtime Tracker:
 ## Contributing
 
 Help keep applications up to date! Check the [open issues](https://github.com/ublue-os/flatpak-tracker/issues?q=is%3Aissue+is%3Aopen) for applications that need runtime updates.
+
+---
+
+*This changelog is automatically maintained and updated with each scheduled workflow run.*
 
 ---
 
